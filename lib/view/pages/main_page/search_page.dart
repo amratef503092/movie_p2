@@ -39,12 +39,16 @@ class SearchPage extends StatelessWidget {
                   height: 36.h,
                 ),
                 CustomTextField(
-                    onChange: (value) {
-                      myCubit.searchTextChanged(value);
+                  hint: "Search",
+                    fieldValidator: (value) {
+                      if (value!.isEmpty) {
+                        return "Please enter a valid search";
+                      }
                     },
-                    borderRadius: 40,
+                  // myCubit.searchTextChanged(value);
+
                     controller: searchController,
-                    hintText: "Search"),
+                ),
                 SizedBox(
                   height: 36.h,
                 ),

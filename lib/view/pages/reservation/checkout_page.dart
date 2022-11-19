@@ -262,9 +262,14 @@ class CheckoutPage extends StatelessWidget {
                     alignment: Alignment.center,
                     children: [
                       CustomTextField(
-                          borderRadius: 10,
+                        fieldValidator: (value) {
+                          if (value.isEmpty) {
+                            return "Please enter your card number";
+                          }
+                          return null;
+                        },
                           controller: visaNumberController,
-                          hintText: ""),
+                          hint: ""),
                       if (visaNumberController.text.trim().isEmpty)
                         IgnorePointer(
                           child: Padding(
@@ -306,18 +311,27 @@ class CheckoutPage extends StatelessWidget {
                     children: [
                       Expanded(
                         child: CustomTextField(
-                            borderRadius: 10,
+                          fieldValidator: (value) {
+                            if (value.isEmpty) {
+                              return "Please enter your card holder name";
+                            }},
                             controller: visaNumberController,
-                            hintText: "00"),
+                            hint: "00"),
                       ),
                       SizedBox(
                         width: 20.w,
                       ),
                       Expanded(
                         child: CustomTextField(
-                            borderRadius: 10,
+                          fieldValidator: (value) {
+                            if (value.isEmpty) {
+                              return "Please enter your card holder name";
+                            }
+                            return null;
+                          },
                             controller: visaNumberController,
-                            hintText: "00"),
+                            hint: "00"),
+
                       ),
                       SizedBox(
                         width: 20.w,
@@ -327,9 +341,16 @@ class CheckoutPage extends StatelessWidget {
                           alignment: Alignment.center,
                           children: [
                             CustomTextField(
-                                borderRadius: 10,
+                              fieldValidator: (value) {
+                                if (value.isEmpty) {
+                                  return "Please enter your card holder name";
+                                }
+                                return null;
+                              },
                                 controller: visaNumberController,
-                                hintText: ""),
+                                hint: ""
+
+                                ),
                             if (visaNumberController.text.trim().isEmpty)
                               IgnorePointer(
                                 child: Padding(

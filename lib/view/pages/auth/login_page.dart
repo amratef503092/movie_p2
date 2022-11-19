@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_flutterr/constants/constants.dart';
 import 'package:movie_flutterr/view/components/buttons/custom_button.dart';
 import 'package:movie_flutterr/view/components/custom_textfield.dart';
@@ -9,15 +8,22 @@ import 'package:movie_flutterr/view/components/login%20&%20signup/header.dart';
 import 'package:movie_flutterr/view/components/login%20&%20signup/login_signup_switch.dart';
 import 'package:movie_flutterr/view/pages/auth/signup_page.dart';
 import 'package:movie_flutterr/view_model/cubit/login/login_cubit.dart';
-import 'package:movie_flutterr/view_model/database/network/end_points.dart';
 
-import '../../components/login & signup/social_login.dart';
+import '../../../constants/validator.dart';
+import '../main_page/home_page.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
+
   TextEditingController passwordController = TextEditingController();
+  bool showPassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +53,6 @@ class LoginPage extends StatelessWidget {
                       SizedBox(
                         height: 50.h,
                       ),
-                      SocialLogin()
                     ]),
               ),
             ),
@@ -62,18 +67,27 @@ class LoginPage extends StatelessWidget {
     return Column(
       children: [
         CustomTextField(
-            borderRadius: 10,
-            isPassword: false,
-            controller: emailController,
-            hintText: "E-Mail"),
+          controller: emailController,
+          fieldValidator: emailValidator,
+          hint: 'email',
+          iconData: Icons.email,
+        ),
         SizedBox(
-          height: 50.h,
+          height: 20.h,
         ),
         CustomTextField(
-            borderRadius: 10,
-            isPassword: true,
-            controller: passwordController,
-            hintText: "Password"),
+          controller: passwordController,
+          fieldValidator: passwordValidator,
+          hint: 'Password',
+          iconData: Icons.lock,
+          password: showPassword,
+          passwordTwo: true,
+          function: () {
+            setState(() {
+              showPassword = !showPassword;
+            });
+          },
+        ),
       ],
     );
   }
@@ -83,33 +97,43 @@ class LoginPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: EdgeInsets.only(left: 10.w),
-          child: Text(
-            "Forget Password?",
-            style: GoogleFonts.roboto(
-                color: RED_COLOR,
-                decoration: TextDecoration.underline,
-                fontSize: 9.sp),
-          ),
-        ),
         SizedBox(
           height: 45.h,
         ),
         Center(
-            child: CustomButton(
-                buttonTitle: "Login",
-                onClick: () {
-                  if (emailController.text.trim().isEmpty ||
-                      passwordController.text.trim().isEmpty) {
-                    return;
-                  }
-                  var json = {
-                    'email': emailController.text.trim(),
-                    'password': passwordController.text.trim()
-                  };
-                  myCubit.loginUser(json, LOGIN_ENDPOINT, context);
-                })),
+            child: BlocConsumer<LoginCubit, LoginState>(
+          listener: (context, state) {
+            // TODO: implement listener
+            if (state is UserLoginSuccess) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HomePage(
+                            releasedMovies: const [],
+                            upComingMovies: const [],
+                          )),
+                  (route) => false);
+            }
+          },
+          builder: (context, state) {
+            return (state is UserLoginLoading)
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : CustomButton(
+                    buttonTitle: "Login",
+                    onClick: () {
+                      if (emailController.text.trim().isEmpty ||
+                          passwordController.text.trim().isEmpty) {
+                        return;
+                      }
+
+                      myCubit.login(
+                          email: emailController.text.trim(),
+                          password: passwordController.text);
+                    });
+          },
+        )),
         SizedBox(
           height: 35.h,
         ),

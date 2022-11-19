@@ -1,95 +1,85 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:movie_flutterr/view_model/cubit/text_field/text_field_cubit.dart';
 
-import '../../constants/constants.dart';
+import '../../constants/color_manager.dart';
+
 
 class CustomTextField extends StatelessWidget {
-  CustomTextField(
-      {Key? key,
-      required this.borderRadius,
-      required this.controller,
-      required this.hintText,
-      this.isPassword = false,
-      this.onChange})
-      : super(key: key);
-
-  TextEditingController controller;
-  String hintText;
-  bool isPassword;
-  FocusNode focusNode = FocusNode();
-  double borderRadius;
-  Function? onChange;
+  CustomTextField({
+    required this.controller,
+    required this.hint,
+    this.password = false,
+    this.passwordTwo = false,
+    this.function,
+    required this.fieldValidator,
+    this.iconData,
+    this.textInputType = TextInputType.text,
+    this.enable = true,
+    this.maxLine = 1,
+    this.formate,
+    Key? key,
+  }) : super(key: key);
+  final TextEditingController controller;
+  final String hint;
+  final bool password;
+  final bool passwordTwo;
+  final Function fieldValidator;
+  final Function? function;
+  final IconData ?iconData;
+  final TextInputType textInputType;
+  final bool enable;
+  final int maxLine ;
+  List<TextInputFormatter> ?formate;
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => TextFieldCubit(),
-      child: BlocBuilder<TextFieldCubit, TextFieldState>(
-        builder: (context, state) {
-          TextFieldCubit myCubit = TextFieldCubit.get(context);
-          return Center(
-            child: SizedBox(
-              width: 280.w,
-              height: 50,
-              child: TextField(
-                onChanged: (value) {
-                  if (onChange != null) onChange!(value);
-                },
-                focusNode: focusNode,
-                obscureText: isPassword && !myCubit.visable,
-                cursorColor: RED_COLOR,
-                style: GoogleFonts.roboto(
-                  color: Colors.white,
-                  fontSize: 13.sp,
-                ),
-                textAlignVertical: TextAlignVertical.bottom,
-                controller: controller,
-                decoration: InputDecoration(
-                  fillColor: TEXT_FIELD_BACKGROUND_COLOR,
-                  filled: true,
-                  focusedBorder: focusBorder(),
-                  enabledBorder: normalBorder(),
-                  border: normalBorder(),
-                  suffixIcon: isPassword
-                      ? GestureDetector(
-                          onTap: () {
-                            myCubit.changeVisablityState();
-                          },
-                          child: Icon(
-                            myCubit.visable
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                            color: DARK_TEXT_COLOR,
-                          ),
-                        )
-                      : null,
-                  floatingLabelBehavior: FloatingLabelBehavior.never,
-                  hintText: hintText,
-                  hintStyle: GoogleFonts.roboto(
-                      color: DARK_TEXT_COLOR,
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w600),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
+    return TextFormField(
+      inputFormatters: formate,
+      controller: controller,
+      validator: (value) => fieldValidator(value),
+      keyboardType : textInputType,
+      enabled: enable,
+      maxLines: maxLine,
+      style: TextStyle(color: Colors.white),
+
+      decoration: InputDecoration(
+
+          icon: Icon(iconData , color: Colors.white,),
+          hintStyle: TextStyle(color: Colors.white,fontSize: 15.sp),
+
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+
+          errorBorder:  const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(40)),
+
+              borderSide: BorderSide(color: ColorManage.redError)),
+
+          enabledBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(40)),
+              borderSide: BorderSide(color: ColorManage.gray)),
+
+          focusedBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(40)),
+            borderSide: BorderSide(color: ColorManage.redError),
+          ),
+          hintText: hint,
+
+          suffix: (passwordTwo)
+              ? GestureDetector(
+            child: (password)
+                ? const Icon(Icons.visibility_outlined)
+                : const Icon(Icons.visibility_off),
+
+            onTap: () {
+              function!();
+            },
+          )
+              : SizedBox()),
+      obscureText: password,
     );
-  }
-
-  OutlineInputBorder focusBorder() {
-    return OutlineInputBorder(
-        borderRadius: BorderRadius.circular(borderRadius.r),
-        borderSide: BorderSide(color: RED_COLOR));
-  }
-
-  OutlineInputBorder normalBorder() {
-    return OutlineInputBorder(
-        borderRadius: BorderRadius.circular(borderRadius.r),
-        borderSide: BorderSide(color: Colors.transparent));
   }
 }

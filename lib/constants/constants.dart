@@ -15,4 +15,4 @@ const String PASSWORD_KEY = "password";
 
 String TOKEN = "";
 
-User? user;
+UserModel? user;
