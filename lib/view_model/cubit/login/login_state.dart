@@ -13,6 +13,6 @@ class UserLoginSuccess extends LoginState{
   bool ban;
 
   UserLoginSuccess({ required this.role,required this.message,required this.ban});
-}
+ }
 
 class UserLoginFailed extends LoginState{}
