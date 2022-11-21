@@ -66,7 +66,7 @@ class CheckoutCompletedPage extends StatelessWidget {
   Widget buttons(context) {
     return Column(
       children: [
-        CustomButton(
+        CustomButtonOne(
             onClick: () {
               Navigator.pushAndRemoveUntil(
                   context,
@@ -84,7 +84,7 @@ class CheckoutCompletedPage extends StatelessWidget {
         SizedBox(
           height: 35.h,
         ),
-        CustomButton(
+        CustomButtonOne(
           onClick: () {
             Navigator.pushAndRemoveUntil(
                 context,

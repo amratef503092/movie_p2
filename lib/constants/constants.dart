@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:movie_flutterr/model/user.dart';
 
+import '../view_model/database/local/cache_helper.dart';
+
 const Color BACKGROUND_COLOR = Color(0xff121212);
 const Color RED_COLOR = Color(0xffD22424);
 
@@ -15,4 +17,8 @@ const String PASSWORD_KEY = "password";
 
 String TOKEN = "";
 
+var userID = CacheHelper.get(key: 'id');
+var role = CacheHelper.get(key: 'role');
+
+const Color buttonColor =  RED_COLOR;
 UserModel? user;

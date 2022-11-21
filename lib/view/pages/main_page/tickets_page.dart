@@ -194,7 +194,7 @@ class TicketsPage extends StatelessWidget {
                           ),
                           Expanded(child: SizedBox()),
                           Expanded(
-                            child: CustomButton(
+                            child: CustomButtonOne(
                                 height: 20,
                                 width: 80,
                                 onClick: () {

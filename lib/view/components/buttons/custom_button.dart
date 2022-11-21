@@ -4,8 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_flutterr/constants/constants.dart';
 
-class CustomButton extends StatelessWidget {
-  CustomButton(
+class CustomButtonOne extends StatelessWidget {
+  CustomButtonOne(
       {Key? key,
       required this.onClick,
       required this.buttonTitle,

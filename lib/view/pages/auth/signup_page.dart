@@ -249,7 +249,7 @@ class _SignUpPageState extends State<SignUpPage> {
               },
               builder: (context, state) {
                 return (state is RegisterLoadingState)? const Center(child: CircularProgressIndicator(),):
-                CustomButton(
+                CustomButtonOne(
                     buttonTitle: "Sign up",
                     onClick: () async{
 

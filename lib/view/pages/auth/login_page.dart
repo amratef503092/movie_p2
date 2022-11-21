@@ -10,6 +10,7 @@ import 'package:movie_flutterr/view/pages/auth/signup_page.dart';
 import 'package:movie_flutterr/view_model/cubit/login/login_cubit.dart';
 
 import '../../../constants/validator.dart';
+import '../admin/layout_admin.dart';
 import '../main_page/home_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -105,14 +106,22 @@ class _LoginPageState extends State<LoginPage> {
           listener: (context, state) {
             // TODO: implement listener
             if (state is UserLoginSuccess) {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => HomePage(
-                            releasedMovies: const [],
-                            upComingMovies: const [],
-                          )),
-                  (route) => false);
+              if (state.role == "3") {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HomePage(
+                              releasedMovies: const [],
+                              upComingMovies: const [],
+                            )),
+                    (route) => false);
+              } else {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LayOutScreenAdmin()),
+                    (route) => false);
+              }
             }
           },
           builder: (context, state) {
@@ -120,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                 ? const Center(
                     child: CircularProgressIndicator(),
                   )
-                : CustomButton(
+                : CustomButtonOne(
                     buttonTitle: "Login",
                     onClick: () {
                       if (emailController.text.trim().isEmpty ||
