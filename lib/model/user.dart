@@ -8,6 +8,7 @@ class UserModel{
   bool online;
   bool ban;
   String phone;
+  String cinemaID;
 
   UserModel({
     required this.id,
@@ -18,7 +19,8 @@ class UserModel{
     required this.photo,
     required this.online,
     required this.ban,
-    required this.phone
+    required this.phone,
+    required this.cinemaID,
   });
 
   Map<String, dynamic> toMap() {
@@ -32,11 +34,13 @@ class UserModel{
       'photo': this.photo,
       'online': this.online,
       'ban': this.ban,
+      'cinemaID' : this.cinemaID,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
+      cinemaID: map['cinemaID'] ?? '',
       id: map['id'] as String,
       name: map['name'] as String,
       email: map['email'] as String,

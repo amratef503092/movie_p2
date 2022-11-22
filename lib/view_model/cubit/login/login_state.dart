@@ -12,7 +12,8 @@ class UserLoginSuccess extends LoginState{
   String message;
   bool ban;
 
-  UserLoginSuccess({ required this.role,required this.message,required this.ban});
+  String cinemaID;
+  UserLoginSuccess({ required this.role,required this.message,required this.ban ,required this.cinemaID});
  }
 
 class UserLoginFailed extends LoginState{}

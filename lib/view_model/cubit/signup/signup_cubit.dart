@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:movie_flutterr/model/user.dart';
+import 'package:movie_flutterr/view_model/database/local/cache_helper.dart';
+
+import '../../../model/cinema_owner_model/cinema_model.dart';
 
 part 'signup_state.dart';
 
@@ -32,6 +35,7 @@ class SignupCubit extends Cubit<SignupState> {
       // if register successful i will add user data to firebase
       user = UserModel(
         ban: false,
+        cinemaID: '',
         gender: gender,
         email: email,
         phone: phone,
@@ -56,6 +60,45 @@ class SignupCubit extends Cubit<SignupState> {
       }
     }).catchError((e){
       print(e.toString());
+    });
+  }
+  Cinemas ? cinemas;
+  Future<void>createCinema({
+  required String name,
+  required String address,
+  required String description,
+  required int numberOfHalls,
+  required int numberOfminiShops,
+  required String open,
+  required String close,
+}) async
+  {
+    cinemas = Cinemas(id: '',
+        name: name,
+        address: address,
+        description: description,
+        number_of_halls: numberOfHalls,
+        number_of_mini_shops: numberOfminiShops, open: open,
+        close: close,);
+    emit(CreateCinemasLoading());
+    await FirebaseFirestore.instance.collection('Cinemas').add(cinemas!.toMap()).
+    then((value)
+        async{
+      print(value.id);
+      await FirebaseFirestore.instance.collection('Cinemas').
+      doc(value.id).
+      update({
+        'id':value.id ,
+      'cinemaOwnerID':FirebaseAuth.instance.currentUser!.uid,
+      });
+      await FirebaseFirestore.instance.collection('users').
+      doc(FirebaseAuth.instance.currentUser!.uid).update({
+        'cinemaID':value.id,
+      });
+      emit(CreateCinemasSuccessful());
+    }).catchError((onError)
+    {
+      emit(CreateCinemasError());
     });
   }
 }

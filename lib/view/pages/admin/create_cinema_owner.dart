@@ -7,11 +7,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:movie_flutterr/view/components/custom_textfield.dart';
 import 'package:movie_flutterr/view/pages/admin/home_admin_screen.dart';
 import 'package:movie_flutterr/view_model/cubit/auth/auth_cubit.dart' as auth;
+import 'package:movie_flutterr/view_model/cubit/layout_admin/layout_admin_cubit.dart';
 
 import '../../../constants/constants.dart';
 import '../../../constants/validator.dart';
 import '../../../view_model/cubit/signup/signup_cubit.dart';
 import '../../components/custom_button.dart';
+import 'layout_admin.dart';
 class CreateCinemaOwner extends StatefulWidget {
   const CreateCinemaOwner({Key? key}) : super(key: key);
 
@@ -212,7 +214,7 @@ class _CreateCinemaOwnerState extends State<CreateCinemaOwner> {
                             ),
                           );
                           auth.AuthCubit.get(context).getAdmin();
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=> const HomeAdminScreen()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> const LayOutScreenAdmin()));
                         }
                         // TODO: implement listener
                       },

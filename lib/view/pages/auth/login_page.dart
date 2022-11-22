@@ -8,9 +8,12 @@ import 'package:movie_flutterr/view/components/login%20&%20signup/header.dart';
 import 'package:movie_flutterr/view/components/login%20&%20signup/login_signup_switch.dart';
 import 'package:movie_flutterr/view/pages/auth/signup_page.dart';
 import 'package:movie_flutterr/view_model/cubit/login/login_cubit.dart';
+import 'package:movie_flutterr/view_model/database/local/cache_helper.dart';
 
 import '../../../constants/validator.dart';
 import '../admin/layout_admin.dart';
+import '../cinema_owner/CinemaOwnerLayout.dart';
+import '../cinema_owner/add_cinema.dart';
 import '../main_page/home_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -106,6 +109,8 @@ class _LoginPageState extends State<LoginPage> {
           listener: (context, state) {
             // TODO: implement listener
             if (state is UserLoginSuccess) {
+
+
               if (state.role == "3") {
                 Navigator.pushAndRemoveUntil(
                     context,
@@ -115,7 +120,15 @@ class _LoginPageState extends State<LoginPage> {
                               upComingMovies: const [],
                             )),
                     (route) => false);
-              } else {
+              } else if (state.role=="2"){
+                if(state.cinemaID =='')
+                {
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:  (context)=>const CreateCinema()), (route) => false);
+                }else{
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const CinemaOwnerLayout(),), (route) => false);
+
+                }
+              }else {
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(

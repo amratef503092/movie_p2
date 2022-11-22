@@ -12,6 +12,7 @@ import '../../../view_model/database/local/cache_helper.dart';
 import '../auth/login_page.dart';
 import 'create_admin.dart';
 import 'create_cinema_owner.dart';
+import 'filteration_by_film_name.dart';
 
 class LayOutScreenAdmin extends StatefulWidget {
   const LayOutScreenAdmin({Key? key}) : super(key: key);
@@ -114,6 +115,18 @@ class _LayOutScreenAdminState extends State<LayOutScreenAdmin> {
                               ));
                             },
                           ),
+                          ListTile(
+                            leading: const Icon(FontAwesomeIcons.search),
+                            title: const Text("Filtration By FilmName"),
+                            onTap: () async {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return const FiltartionByFilmName();
+                                },
+                              ));
+                            },
+                          ),
+
                           ListTile(
                             leading: const Icon(Icons.logout),
                             title: const Text("Logout"),

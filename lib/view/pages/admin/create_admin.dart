@@ -11,6 +11,7 @@ import '../../../constants/constants.dart';
 import '../../../constants/validator.dart';
 import '../../../view_model/cubit/signup/signup_cubit.dart';
 import '../../components/custom_button.dart';
+import 'layout_admin.dart';
 
 class CreateAdmin extends StatefulWidget {
   const CreateAdmin({Key? key}) : super(key: key);
@@ -212,7 +213,7 @@ class _CreateAdminState extends State<CreateAdmin> {
                             ),
                           );
                           auth.AuthCubit.get(context).getAdmin();
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=> const HomeAdminScreen()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> const LayOutScreenAdmin()));
                         }
                         // TODO: implement listener
                       },

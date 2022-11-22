@@ -14,3 +14,12 @@ class RegisterErrorState extends SignupState {
   String message;
   RegisterErrorState({required this.message});
 }
+class CreateCinemasLoading extends SignupState{
+
+}
+class CreateCinemasError extends SignupState{
+
+}
+class CreateCinemasSuccessful extends SignupState{
+
+}
