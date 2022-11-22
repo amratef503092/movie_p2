@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:movie_flutterr/view/components/custom_button.dart';
 import 'package:movie_flutterr/view/components/custom_textfield.dart';
 
 class CreateHalles extends StatefulWidget {
@@ -14,6 +15,7 @@ class _CreateHallesState extends State<CreateHalles> {
   TextEditingController nameController = TextEditingController();
   TextEditingController seat = TextEditingController();
   TextEditingController description = TextEditingController();
+  RegExp regExp = RegExp(r"^[0-9][3]$", caseSensitive: false);
 
   @override
   Widget build(BuildContext context) {
@@ -72,12 +74,43 @@ class _CreateHallesState extends State<CreateHalles> {
                   const SizedBox(
                     height: 20,
                   ),
-
-
-
+                  CustomTextField(
+                    controller: description,
+                    fieldValidator: (String value)
+                    {
+                      if (value.trim().isEmpty || value == '') {
+                        return 'This field is required';
+                      }
+                    },
+                    hint: 'description',
+                    iconData: Icons.description,
+                  ),
                   const SizedBox(
                     height: 20,
                   ),
+                  CustomTextField(
+                    controller: seat,
+                    textInputType: TextInputType.number,
+                    fieldValidator: (String value) {
+                      if (value.isEmpty) {
+                        return "Number Of Seat is required";
+                      }
+                    },
+                    hint: 'Number Of Seats',
+                    iconData: Icons.event_seat,
+                  ),
+                  SizedBox(
+                    height: 50.h,
+                  ),
+                  CustomButton(disable: true,widget: Text("Create Halls"),
+                      function: (){
+                    if(formKey.currentState!.validate())
+                    {
+                      print("valid");
+                    }
+                      }),
+
+
 
                   SizedBox(
                     height: 20,
