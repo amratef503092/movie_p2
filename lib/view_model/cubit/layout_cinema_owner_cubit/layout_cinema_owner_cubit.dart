@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
@@ -23,7 +24,18 @@ class LayoutCinemaOwnerCubit extends Cubit<LayoutCinemaOwnerState> {
 
     void changeIndex(int index) {
       currentIndex = index;
-      emit(LayoutCinemanChangeIndex());
+      emit(LayoutCinemaChangeIndex());
     }
-
+  Future<void>getHalls()async{
+    emit(LayoutCinemaChangLoading());
+    await FirebaseFirestore.instance.collection('Halls').get().then((value) {
+      for (var element in value.docs) {
+        print(element.data());
+      }
+      emit(LayoutCinemaChangSuccessful());
+    }).catchError((error){
+      print(error.toString());
+      emit(LayoutCinemaChangError());
+    });
+  }
 }
