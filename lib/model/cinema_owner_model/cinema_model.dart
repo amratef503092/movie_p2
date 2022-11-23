@@ -1,4 +1,4 @@
-class Cinemas
+class CinemaModel
 {
   String id;
   String name;
@@ -9,7 +9,7 @@ class Cinemas
   String open;
   String close;
 
-  Cinemas({
+  CinemaModel({
     required this.id,
     required this.name,
     required this.address,
@@ -33,8 +33,8 @@ class Cinemas
     };
   }
 
-  factory Cinemas.fromMap(Map<String, dynamic> map) {
-    return Cinemas(
+  factory CinemaModel.fromMap(Map<String, dynamic> map) {
+    return CinemaModel(
       id: map['id'] as String,
       name: map['name'] as String,
       address: map['address'] as String,

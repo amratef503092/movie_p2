@@ -62,7 +62,7 @@ class SignupCubit extends Cubit<SignupState> {
       print(e.toString());
     });
   }
-  Cinemas ? cinemas;
+  CinemaModel ? cinemas;
   Future<void>createCinema({
   required String name,
   required String address,
@@ -73,7 +73,7 @@ class SignupCubit extends Cubit<SignupState> {
   required String close,
 }) async
   {
-    cinemas = Cinemas(id: '',
+    cinemas = CinemaModel(id: '',
         name: name,
         address: address,
         description: description,

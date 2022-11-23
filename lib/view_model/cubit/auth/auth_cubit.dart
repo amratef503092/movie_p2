@@ -21,7 +21,7 @@ class AuthCubit extends Cubit<AuthState>
 
   // login function start
   Future<void> getUserData() async {
-    userModel = null;
+
     emit(GetUserDataLoadingState());
 
     FirebaseFirestore.instance

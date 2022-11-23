@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:movie_flutterr/view_model/cubit/auth/auth_cubit.dart';
 import 'package:movie_flutterr/view_model/cubit/layout_cinema_owner_cubit/layout_cinema_owner_cubit.dart';
 
 class CinemaOwnerLayout extends StatefulWidget {
@@ -14,9 +15,12 @@ class CinemaOwnerLayout extends StatefulWidget {
 class _CinemaOwnerLayoutState extends State<CinemaOwnerLayout> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => LayoutCinemaOwnerCubit(),
-      child: BlocConsumer<LayoutCinemaOwnerCubit, LayoutCinemaOwnerState>(
+    return BlocConsumer<AuthCubit, AuthState>(
+  listener: (context, state) {
+    // TODO: implement listener
+  },
+  builder: (context, state) {
+    return BlocConsumer<LayoutCinemaOwnerCubit, LayoutCinemaOwnerState>(
         listener: (context, state) {
           // TODO: implement listener
         },
@@ -52,7 +56,8 @@ class _CinemaOwnerLayoutState extends State<CinemaOwnerLayout> {
                 )),
           );
         },
-      ),
-    );
+      );
+  },
+);
   }
 }

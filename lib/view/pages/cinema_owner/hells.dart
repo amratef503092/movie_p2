@@ -39,7 +39,7 @@ class _HallsScreenState extends State<HallsScreen> {
                CustomButton(widget: const Text("Create Halls"),
                    function: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return CreateHalles();
+                    return const CreateHalles();
                   },));
                    },disable: true,),
                 ListView.builder(physics: NeverScrollableScrollPhysics(),itemBuilder:

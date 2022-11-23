@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movie_flutterr/view/components/custom_button.dart';
 import 'package:movie_flutterr/view/components/custom_textfield.dart';
+import 'package:movie_flutterr/view_model/cubit/layout_cinema_owner_cubit/layout_cinema_owner_cubit.dart';
+
+import '../../../view_model/cubit/auth/auth_cubit.dart';
 
 class CreateHalles extends StatefulWidget {
   const CreateHalles({Key? key}) : super(key: key);
@@ -53,7 +57,6 @@ class _CreateHallesState extends State<CreateHalles> {
                     height: 20,
                   ),
 
-
                   CustomTextField(
                     controller: nameController,
                     fieldValidator: (String value) {
@@ -76,8 +79,7 @@ class _CreateHallesState extends State<CreateHalles> {
                   ),
                   CustomTextField(
                     controller: description,
-                    fieldValidator: (String value)
-                    {
+                    fieldValidator: (String value) {
                       if (value.trim().isEmpty || value == '') {
                         return 'This field is required';
                       }
@@ -102,15 +104,43 @@ class _CreateHallesState extends State<CreateHalles> {
                   SizedBox(
                     height: 50.h,
                   ),
-                  CustomButton(disable: true,widget: Text("Create Halls"),
-                      function: (){
-                    if(formKey.currentState!.validate())
-                    {
-                      print("valid");
-                    }
-                      }),
+                  BlocConsumer<LayoutCinemaOwnerCubit, LayoutCinemaOwnerState>(
+                    listener: (context, state) {
+                      // TODO: implement listener
+                      if(state is CreateHallsError){
+                        ScaffoldMessenger.of(context).showSnackBar(
 
-
+                          SnackBar(
+                            backgroundColor: Colors.red,
+                            content: Text(state.error),
+                          ),
+                        );
+                      }else if(state is CreateHallsSuccessful){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(backgroundColor: Colors.green,
+                            content: Text('Create Halls Successful'),
+                          ),
+                        );
+                        Navigator.pop(context);
+                      }
+                    },
+                    builder: (context, state) {
+                      return (state is CreateHallsLoading )?Center(child: CircularProgressIndicator(),):CustomButton(
+                          disable: true,
+                          widget: Text("Create Halls"),
+                          function: () {
+                            if (formKey.currentState!.validate()) {
+                              LayoutCinemaOwnerCubit.get(context).createHalls(
+                              name: nameController.text.trim(),
+                              description: description.text.trim(),
+                              seat: int.parse(seat.text),
+                                cinemaID: AuthCubit.get(context).userModel!.cinemaID,
+                            )
+                                ;
+                            }
+                          });
+                    },
+                  ),
 
                   SizedBox(
                     height: 20,

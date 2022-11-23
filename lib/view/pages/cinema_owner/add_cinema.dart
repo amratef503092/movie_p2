@@ -133,14 +133,12 @@ class _CreateCinemaState extends State<CreateCinema> {
                     timeStep: 10,
                     timeBlock: 30,
                     onRangeCompleted: (range) => setState(() {
+
                       timeRangeResult = range;
                       print(timeRangeResult!.start);
                     } ),
                   ),
-
-
                   // creat drop down button
-
                   SizedBox(
                     height: 20,
                   ),
@@ -172,8 +170,8 @@ class _CreateCinemaState extends State<CreateCinema> {
                              description:description.text.trim(),
                                 address: addressController.text.trim(),
                                 name: nameController.text.trim(),
-                                open: timeRangeResult!.start.toString(),
-                                close: timeRangeResult!.start.toString(),
+                                open: timeRangeResult!.start.hour.toString(),
+                                close: timeRangeResult!.end.hour.toString(),
                                 numberOfHalls: 0,
                                 numberOfminiShops: 0,
                               ).then((value) {
