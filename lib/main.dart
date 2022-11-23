@@ -42,7 +42,8 @@ class MyApp extends StatelessWidget {
               create: (context) => AuthCubit()..getUserData(),
             ),
             BlocProvider(
-            create: (context) => LayoutCinemaOwnerCubit()..getCinemaInfo()..getCinemaInfo(),),
+
+            create: (context) => LayoutCinemaOwnerCubit()..getCinemaInfo()..getCinemaInfo()),
 
 
           ],

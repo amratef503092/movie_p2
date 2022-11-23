@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_flutterr/view/components/custom_button.dart';
+import 'package:movie_flutterr/view_model/cubit/auth/auth_cubit.dart';
 import 'package:movie_flutterr/view_model/cubit/layout_cinema_owner_cubit/layout_cinema_owner_cubit.dart';
 
 import 'create_halls.dart';
@@ -14,7 +15,6 @@ class _HallsScreenState extends State<HallsScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    LayoutCinemaOwnerCubit.get(context).getHalls();
     super.initState();
   }
   @override
@@ -27,7 +27,7 @@ class _HallsScreenState extends State<HallsScreen> {
         width: double.infinity,
         child: RefreshIndicator(
           onRefresh: () async {
-            LayoutCinemaOwnerCubit.get(context).getHalls();
+            LayoutCinemaOwnerCubit.get(context).getHalls(cinemaID: AuthCubit.get(context).userModel!.cinemaID);
           },
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
@@ -42,14 +42,15 @@ class _HallsScreenState extends State<HallsScreen> {
                     return const CreateHalles();
                   },));
                    },disable: true,),
-                ListView.builder(physics: NeverScrollableScrollPhysics(),itemBuilder:
+                ListView.builder(physics: const NeverScrollableScrollPhysics(),itemBuilder:
                     (context,index){
                   return Card(
                     child: ListTile(
-                      title: Text("Halls $index"),
+                      title: Text(LayoutCinemaOwnerCubit.get(context).halls[index].name),
+                      subtitle: Text(LayoutCinemaOwnerCubit.get(context).halls[index].description),
                     ),
                   );
-                },itemCount: 10,shrinkWrap: true,),
+                },itemCount: LayoutCinemaOwnerCubit.get(context).halls.length,shrinkWrap: true,),
               ],
             ),
           ),

@@ -15,12 +15,7 @@ class CinemaOwnerLayout extends StatefulWidget {
 class _CinemaOwnerLayoutState extends State<CinemaOwnerLayout> {
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthCubit, AuthState>(
-  listener: (context, state) {
-    // TODO: implement listener
-  },
-  builder: (context, state) {
-    return BlocConsumer<LayoutCinemaOwnerCubit, LayoutCinemaOwnerState>(
+    return  BlocConsumer<LayoutCinemaOwnerCubit, LayoutCinemaOwnerState>(
         listener: (context, state) {
           // TODO: implement listener
         },
@@ -57,7 +52,6 @@ class _CinemaOwnerLayoutState extends State<CinemaOwnerLayout> {
           );
         },
       );
-  },
-);
+
   }
 }

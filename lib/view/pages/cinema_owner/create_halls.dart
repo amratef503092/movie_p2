@@ -117,15 +117,15 @@ class _CreateHallesState extends State<CreateHalles> {
                         );
                       }else if(state is CreateHallsSuccessful){
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(backgroundColor: Colors.green,
+                          const SnackBar(backgroundColor: Colors.green,
                             content: Text('Create Halls Successful'),
                           ),
                         );
-                        Navigator.pop(context);
+                        Navigator.maybePop(context);
                       }
                     },
                     builder: (context, state) {
-                      return (state is CreateHallsLoading )?Center(child: CircularProgressIndicator(),):CustomButton(
+                      return (state is CreateHallsLoading )?Center  (child: CircularProgressIndicator(),):CustomButton(
                           disable: true,
                           widget: Text("Create Halls"),
                           function: () {
@@ -134,7 +134,7 @@ class _CreateHallesState extends State<CreateHalles> {
                               name: nameController.text.trim(),
                               description: description.text.trim(),
                               seat: int.parse(seat.text),
-                                cinemaID: AuthCubit.get(context).userModel!.cinemaID,
+                                cinemaID: AuthCubit.get(context).userModel!.cinemaID
                             )
                                 ;
                             }
