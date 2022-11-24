@@ -36,16 +36,14 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       builder: (context, child) {
         return MultiBlocProvider(
-          providers:
-          [
-               BlocProvider(
+          providers: [
+            BlocProvider(
               create: (context) => AuthCubit()..getUserData(),
             ),
             BlocProvider(
-
-            create: (context) => LayoutCinemaOwnerCubit()..getCinemaInfo()..getCinemaInfo()),
-
-
+                create: (context) => LayoutCinemaOwnerCubit()
+                  ..getCinemaInfo()
+                  ..getCinemaInfo()),
           ],
           child: MaterialApp(
             theme: ThemeData(

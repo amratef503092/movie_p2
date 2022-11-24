@@ -14,6 +14,7 @@ import '../../../view/pages/cinema_owner/MoviesScreen.dart';
 import '../../../view/pages/cinema_owner/ProfileScreen.dart';
 import '../../../view/pages/cinema_owner/TicketsScreen.dart';
 import '../../../view/pages/cinema_owner/hells.dart';
+import '../Get_halls/get_halls_cubit.dart';
 
 part 'layout_cinema_owner_state.dart';
 
@@ -33,91 +34,6 @@ class LayoutCinemaOwnerCubit extends Cubit<LayoutCinemaOwnerState> {
     currentIndex = index;
     emit(LayoutCinemaChangeIndex());
   }
-  List<HallsModel> halls = [];
-  Future<void> getHalls({required String cinemaID}) async {
-    halls = [];
-    emit(LayoutCinemaChangLoading());
-    await FirebaseFirestore.instance.collection('Halls').
-    where('cinema_id',isEqualTo: cinemaID).get().then((value) {
-      for (var element in value.docs) {
-        print(element.id);
-        halls.add(HallsModel.fromMap(element.data()));
-      }
-      emit(LayoutCinemaChangSuccessful());
-    }).catchError((error) {
-      print(error.toString());
-      emit(LayoutCinemaChangError());
-    });
-  }
-  Future<void>createHalls({
-  required String name,
-    required String description,
-    required int seat,
-    required String cinemaID
-}) async
-  {
-    emit(CreateHallsLoading());
-    FirebaseFirestore.instance.collection('Halls').get().then((value) async
-    {
-      if(value.docs.isNotEmpty){
-        for (var element in value.docs) {
-          if(element.data()['name']==name)
-          {
-            emit(CreateHallsError('this name is already exist'));
-          }else{
-            await  FirebaseFirestore.instance.collection('Halls')
-                .add({
-              'name': name,
-              'seats': seat,
-              'description': description,
-              'cinema_id': cinemaID,
-            }).then((value) {
-
-              emit(CreateHallsSuccessful());
-
-            }).catchError((error)
-            {
-              if(error.toString().contains('already exists'))
-              {
-                emit(CreateHallsError('this hall is already exists'));
-              }
-              else
-              {
-                emit(CreateHallsError(error.toString()));
-              }
-
-            });
-          }
-        }
-      }else{
-        await  FirebaseFirestore.instance.collection('Halls')
-            .add({
-          'name': name,
-          'seats': seat,
-          'description': description,
-          'cinema_id': cinemaID,
-        }).then((value) {
-
-          emit(CreateHallsSuccessful());
-
-        }).catchError((error)
-        {
-          if(error.toString().contains('already exists'))
-          {
-            emit(CreateHallsError('this hall is already exists'));
-          }
-          else
-          {
-            emit(CreateHallsError(error.toString()));
-          }
-
-        });
-      }
-
-    });
-
-  }
-
   TimeRangeResult? timeRangeResult;
   CinemaModel ? cinemaModel;
   Future<void> getCinemaInfo() async {

@@ -146,3 +146,31 @@ class GetAllCinemaOwnerErrorState extends AuthState{
 class GetAllCustomerScreenLoading extends AuthState{}
 class GetAllCustomerScreenSuccessful extends AuthState{}
 class GetAllCustomerScreenError extends AuthState{}
+class GetHallsLoading extends AuthState {}
+class GetHallsSuccessful  extends AuthState {}
+class GetHallsError  extends AuthState {}
+class CreateHallsLoading  extends AuthState {}
+class CreateHallsSuccessful  extends AuthState {}
+class CreateHallsError  extends AuthState {
+  final String error;
+  CreateHallsError(this.error);
+}
+class EditHallsLoading  extends AuthState {}
+class EditHallsSuccessful  extends AuthState {}
+class EditHallsError  extends AuthState {}
+class PickImageSuccessful extends AuthState {}
+class AddNewFilmLoading extends AuthState {}
+class AddNewFilmSuccessful extends AuthState {}
+class AddNewFilmError extends AuthState {}
+class GetFilmsLoading extends AuthState {}
+class GetFilmsSuccessful extends AuthState {}
+class GetFilmsError extends AuthState {}
+class DeleteFilmLoading extends AuthState {}
+class DeleteFilmSuccessful extends AuthState {}
+class DeleteFilmError extends AuthState {}
+class EditFilmLoading extends AuthState {}
+class EditFilmSuccessful extends AuthState {}
+class EditFilmError extends AuthState {}
+class GetHallInfoLoading extends AuthState {}
+class GetHallInfoSuccessful extends AuthState {}
+class GetHallInfoError extends AuthState {}
