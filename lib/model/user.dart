@@ -9,6 +9,7 @@ class UserModel{
   bool ban;
   String phone;
   String cinemaID;
+  String age;
 
   UserModel({
     required this.id,
@@ -21,6 +22,7 @@ class UserModel{
     required this.ban,
     required this.phone,
     required this.cinemaID,
+    required this.age,
   });
 
   Map<String, dynamic> toMap() {
@@ -28,19 +30,19 @@ class UserModel{
       'id': this.id,
       'name': this.name,
       'email': this.email,
-      'phone' : this.phone,
       'role': this.role,
       'gender': this.gender,
       'photo': this.photo,
       'online': this.online,
       'ban': this.ban,
-      'cinemaID' : this.cinemaID,
+      'phone': this.phone,
+      'cinemaID': this.cinemaID,
+      'age': this.age,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      cinemaID: map['cinemaID'] ?? '',
       id: map['id'] as String,
       name: map['name'] as String,
       email: map['email'] as String,
@@ -50,6 +52,8 @@ class UserModel{
       online: map['online'] as bool,
       ban: map['ban'] as bool,
       phone: map['phone'] as String,
+      cinemaID: map['cinemaID'] as String,
+      age: map['age'] as String,
     );
   }
 }

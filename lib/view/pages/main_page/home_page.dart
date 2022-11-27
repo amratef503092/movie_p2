@@ -7,138 +7,108 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_flutterr/constants/assets.dart';
 import 'package:movie_flutterr/constants/constants.dart';
-import 'package:movie_flutterr/model/movies/movie_model.dart';
-import 'package:movie_flutterr/model/movies/released_movie.dart';
-import 'package:movie_flutterr/model/movies/upcoming_movie.dart';
-import 'package:movie_flutterr/view/components/home/released_card.dart';
 import 'package:movie_flutterr/view/components/home/upcoming_card.dart';
+import 'package:movie_flutterr/view/pages/cinema_owner/MoviesScreen.dart';
 import 'package:movie_flutterr/view_model/cubit/home%20page/home_page_cubit.dart';
 import 'package:movie_flutterr/view_model/cubit/main%20page/main_page_cubit.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage(
-      {Key? key, required this.releasedMovies, required this.upComingMovies})
-      : super(key: key);
+import '../user/detiles_screen.dart';
 
-  List<ReleasedMovie> releasedMovies;
-  List<UpComingMovie> upComingMovies;
+class HomePage extends StatefulWidget {
+  HomePage({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    MainPageCubit.get(context).getReleasedMoviesData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => HomePageCubit(),
-      child: BlocBuilder<HomePageCubit, HomePageState>(
+    return  BlocBuilder<HomePageCubit, HomePageState>(
         builder: (context, state) {
           HomePageCubit myCubit = HomePageCubit.get(context);
-          return Scaffold(
-            appBar: AppBar(
-              elevation: 0,
-              centerTitle: true,
-              backgroundColor: Colors.transparent,
-              title: Image.asset(
-                Assets.LOGO,
-                width: 40.w,
-              ),
-            ),
-            backgroundColor: Colors.transparent,
-            body: SingleChildScrollView(
-              child: Center(
-                child: Column(
-                  children: [
-                    Stack(
-                      children: [
-                        Positioned(
-                          left: 0,
-                          right: 0,
-                          top: 0,
-                          bottom: 0,
-                          child: backGround(myCubit.currentReleasedMovie >
-                                  releasedMovies.length - 1
-                              ? myCubit.currentReleasedMovie -
-                                  releasedMovies.length
-                              : myCubit.currentReleasedMovie),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+          return (state is GetReleasedMoviesLoading)
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Scaffold(
+                  appBar: AppBar(
+                    elevation: 0,
+                    centerTitle: true,
+                    backgroundColor: Colors.transparent,
+                    title: Image.asset(
+                      Assets.LOGO,
+                      width: 40.w,
+                    ),
+                  ),
+                  backgroundColor: Colors.transparent,
+                  body: SingleChildScrollView(
+                    child: Center(
+                      child: SizedBox(
+                        width: 1.sw,
+                        height: 1.sh,
+                        child: Column(
                           children: [
-                            pageTitle(),
-                            releasedMoviesSwiper(myCubit),
+                            upComingMoviesSwiper(),
                             SizedBox(
-                              height: 50.h,
+                              height: 20.h,
                             ),
-                            Padding(
-                              padding:
-                                  EdgeInsets.only(left: 30.0.w, bottom: 30.h),
-                              child: Text("Coming Soon",
-                                  style: GoogleFonts.roboto(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 17.sp)),
+                            Expanded(
+                              child: GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  childAspectRatio: 0.7,
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                ),
+                                itemBuilder: (context, index) {
+                                  return CustomCardMovie(
+                                    function: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  BlocProvider.value(
+                                                     value: myCubit,
+                                                    child: DetailsMovieScreen(
+                                                      movie: MainPageCubit.get(
+                                                              context)
+                                                          .movies[index],
+                                                    ),
+                                                  )));
+                                    },
+                                    title: MainPageCubit.get(context)
+                                        .movies[index]
+                                        .nameMovie,
+                                    image: MainPageCubit.get(context)
+                                        .movies[index]
+                                        .image,
+                                  );
+                                },
+                                itemCount:
+                                    MainPageCubit.get(context).movies.length,
+                              ),
                             ),
                           ],
                         ),
-                      ],
+                      ),
                     ),
-                    upComingMoviesSwiper()
-                  ],
-                ),
-              ),
-            ),
-          );
+                  ),
+                );
         },
-      ),
-    );
-  }
 
-  Widget backGround(int index) {
-    return Stack(
-      children: [
-        Positioned(
-            left: 0,
-            right: 0,
-            top: 0,
-            bottom: 0,
-            child: Opacity(
-              opacity: 0.25,
-              child: releasedMovies.isNotEmpty
-                  ? Container(
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: releasedMovies[index].image!,
-                              fit: BoxFit.fill)),
-                    )
-                  : null,
-            )),
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [
-                  BACKGROUND_COLOR,
-                  BACKGROUND_COLOR.withOpacity(0.8),
-                  BACKGROUND_COLOR.withOpacity(0.3),
-                  BACKGROUND_COLOR.withOpacity(0.1),
-                  BACKGROUND_COLOR.withOpacity(0.3),
-                  BACKGROUND_COLOR.withOpacity(0.8),
-                  BACKGROUND_COLOR,
-                ]),
-          ),
-        ),
-        /*Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.transparent,
-                  Colors.transparent,
-                  BACKGROUND_COLOR.withOpacity(0.5),
-                  BACKGROUND_COLOR
-                ]),
-          ),
-        ),*/
-      ],
     );
   }
 
@@ -174,62 +144,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget releasedMoviesSwiper(HomePageCubit myCubit) {
-    return SizedBox(
-      height: 280.h,
-      width: 360.w,
-      child: Swiper(
-        onIndexChanged: (value) {
-          print(value);
-          myCubit.changeReleasedMovie(value);
-        },
-        index: myCubit.currentReleasedMovie,
-        layout: SwiperLayout.CUSTOM,
-        customLayoutOption: CustomLayoutOption(startIndex: -1, stateCount: 9)
-          ..addRotate([
-            -80 / 480,
-            -60 / 480,
-            -40.0 / 180,
-            -20.0 / 180,
-            0.0,
-            20.0 / 180,
-            40.0 / 180,
-            60 / 480,
-            80 / 480
-          ])
-          ..addTranslate([
-            Offset(-1640.0, -40.0),
-            Offset(-820.0, -20.0),
-            Offset(-420.0, -10.0),
-            Offset(-210.0, -5.0),
-            Offset(0.0, 0.0),
-            Offset(210.0, -5.0),
-            Offset(420.0, -10.0),
-            Offset(820.0, -20.0),
-            Offset(1640.0, -40.0),
-          ]),
-        itemWidth: 200,
-        pagination: const SwiperPagination(
-            margin: EdgeInsets.zero,
-            builder: DotSwiperPaginationBuilder(
-                activeSize: 15,
-                size: 12,
-                activeColor: RED_COLOR,
-                color: TEXT_FIELD_BACKGROUND_COLOR)),
-        itemCount: releasedMovies.length,
-        itemBuilder: (context, index) {
-          return ReleasedMovieCard(
-            movie: releasedMovies[index > releasedMovies.length - 1
-                ? index - releasedMovies.length
-                : index],
-          );
-        },
-      ),
-    );
-  }
-
   //create a generator for rotation and positions depends on list length
-
   Widget upComingMoviesSwiper() {
     return SizedBox(
       height: 200,
@@ -244,10 +159,11 @@ class HomePage extends StatelessWidget {
                   viewportFraction: 0.7,
                   scale: 0.8,
                   scrollDirection: Axis.horizontal,
-                  itemCount: upComingMovies.length,
+                  itemCount: MainPageCubit.get(context).movies.length,
                   itemBuilder: ((context, index) {
                     return UpComingMovieCard(
-                      movie: upComingMovies[index],
+
+                      movie: MainPageCubit.get(context).movies[index],
                     );
                   })))
         ],

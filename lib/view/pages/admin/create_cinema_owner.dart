@@ -223,6 +223,7 @@ class _CreateCinemaOwnerState extends State<CreateCinemaOwner> {
                           function: () {
                             if (formKey.currentState!.validate()) {
                               SignupCubit.get(context).registerUser(
+                                age: ageController.text,
                                 gender: valueGender.toString(),
                                 email: emailController.text.trim(),
                                 password: passwordController.text,

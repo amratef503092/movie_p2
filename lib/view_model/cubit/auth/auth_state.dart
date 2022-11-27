@@ -174,3 +174,22 @@ class EditFilmError extends AuthState {}
 class GetHallInfoLoading extends AuthState {}
 class GetHallInfoSuccessful extends AuthState {}
 class GetHallInfoError extends AuthState {}
+
+class CreateMainShopesLaoding extends AuthState {}
+class CreateMainShopesSuccessful extends AuthState {}
+class CreateMainShopesError extends AuthState {}
+class GetMiniShopesLoading extends AuthState {}
+class GetMiniShopesSuccessful extends AuthState {}
+class GetMiniShopesError extends AuthState {}
+class AddSnacksLoading extends AuthState {}
+class AddSnacksSuccessful extends AuthState {}
+class AddSnacksError extends AuthState {}
+class GetSnacksLoading extends AuthState {}
+class GetSnacksSuccessful extends AuthState {}
+class GetSnacksError extends AuthState {}
+class DeleteSnackLoading extends AuthState {}
+class EditSnacksLoading extends AuthState {}
+class EditSnacksSuccessful extends AuthState {}
+class EditSnacksError extends AuthState {}
+
+

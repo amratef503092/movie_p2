@@ -222,6 +222,7 @@ class _CreateAdminState extends State<CreateAdmin> {
                           function: () {
                             if (formKey.currentState!.validate()) {
                               SignupCubit.get(context).registerUser(
+                                age: ageController.text,
                                   gender: valueGender.toString(),
                                   email: emailController.text.trim(),
                                   password: passwordController.text,

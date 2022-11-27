@@ -20,7 +20,7 @@ class LayoutAdminCubit extends Cubit<LayoutAdminState> {
     const CinemaOwnerAdmin(),
     const CustomerScreenAdmin()
   ];
-  List<String> appbarTitle = ["Admin", "pharmacy", "Customer"];
+  List<String> appbarTitle = ["Admin", "Cinema", "Customer"];
   int currentIndex = 0;
 
   void changeIndex(int index) {

@@ -1,28 +1,34 @@
 import 'dart:io' as io;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
+
+import '../../../model/cinema_owner_model/MiniShops_model.dart';
 import '../../../model/cinema_owner_model/cinema_owner_model.dart';
 import '../../../model/cinema_owner_model/halls_model.dart';
 import '../../../model/cinema_owner_model/movie_model.dart';
+import '../../../model/cinema_owner_model/snacks.dart';
 import '../../../model/user.dart';
 import '../../database/local/cache_helper.dart';
+
 part 'auth_state.dart';
 
-class AuthCubit extends Cubit<AuthState>
-{
+class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
+
   static AuthCubit get(context) => BlocProvider.of<AuthCubit>(context);
   UserModel? userModel;
   final ImagePicker _picker = ImagePicker();
+
   // login function start
   Future<void> getUserData() async {
-
     emit(GetUserDataLoadingState());
 
     FirebaseFirestore.instance
@@ -79,13 +85,13 @@ class AuthCubit extends Cubit<AuthState>
       }
 
       emit(GetAllCustomerScreenSuccessful());
-
-    }).catchError((error){
-
+    }).catchError((error) {
       emit(GetAllCinemaOwnerErrorState('some thing Error'));
     });
   }
+
   List<UserModel> userModelList = [];
+
   Future<void> getCustomerUSer() async {
     emit(GetAllCinemaOwnerLoadingState());
     userModelList = [];
@@ -95,14 +101,12 @@ class AuthCubit extends Cubit<AuthState>
         .get()
         .then((value) {
       for (var element in value.docs) {
-        print(element.data().toString()+ "iiodaosidiojasdjio");
+        print(element.data().toString() + "iiodaosidiojasdjio");
         userModelList.add(UserModel.fromMap(element.data()));
       }
 
       emit(GetAllCustomerScreenSuccessful());
-
-    }).catchError((error){
-
+    }).catchError((error) {
       emit(GetAllCinemaOwnerErrorState('some thing Error'));
     });
   }
@@ -134,12 +138,12 @@ class AuthCubit extends Cubit<AuthState>
     } else {
       print('Amr2');
       ref.putFile(io.File(file.path), metadata).then((p0) => {
-            ref.getDownloadURL().then((value) {
+            ref.getDownloadURL().then((value) async{
               // here modify the profile pic
               userModel!.photo = value;
-              FirebaseFirestore.instance
+             await FirebaseFirestore.instance
                   .collection('users')
-                  .doc(CacheHelper.get(key: 'id'))
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
                   .update({'photo': value}).then((value) {
                 emit(UploadImageStateSuccessful('upload done'));
               }).catchError((onError) {
@@ -149,7 +153,9 @@ class AuthCubit extends Cubit<AuthState>
           });
     }
   }
-  String ?  imageUrl;
+
+  String? imageUrl;
+
   Future<void> uploadImageMovie(XFile? file, BuildContext context) async {
     emit(UploadImageStateLoading('loading'));
     if (file == null) {
@@ -177,32 +183,40 @@ class AuthCubit extends Cubit<AuthState>
     } else {
       print('Amr2');
       ref.putFile(io.File(file.path), metadata).then((p0) => {
-        ref.getDownloadURL().then((value) {
-          // here modify the profile pic
-          imageUrl = value;
-           emit(UploadImageStateSuccessful('upload done'));
-        })
-      });
+            ref.getDownloadURL().then((value) {
+              // here modify the profile pic
+              imageUrl = value;
+              emit(UploadImageStateSuccessful('upload done'));
+            })
+          });
     }
   }
-   XFile? image;
-  Future<void> pickImageGallary(BuildContext context) async {
-    image= await _picker.pickImage(source: ImageSource.gallery);
+
+  XFile? image;
+
+  Future<void> pickImageMovie(BuildContext context) async {
+    image = await _picker.pickImage(source: ImageSource.gallery);
     if (image == null) {
     } else {
       print(image!.path);
       await uploadImageMovie(image, context).then((value) {});
     }
   }
+  Future<void> pickImageGallary(BuildContext context) async {
+    image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image == null) {
+    } else {
+      print(image!.path);
+      await uploadFile(image, context).then((value) {});
+    }
+  }
 
   Future<void> pickImageCamera(BuildContext context) async {
-     image = await _picker.pickImage(source: ImageSource.camera);
+    image = await _picker.pickImage(source: ImageSource.camera);
     if (image == null) {
     } else {
       print(image!.path);
       emit(PickImageSuccessful());
-
-
     }
   }
 
@@ -370,12 +384,17 @@ class AuthCubit extends Cubit<AuthState>
       });
     }
   }
+
   List<HallsModel> halls = [];
+
   Future<void> getHalls({required String cinemaID}) async {
     halls = [];
     emit(GetHallsLoading());
-    await FirebaseFirestore.instance.collection('Halls').
-    where('cinema_id',isEqualTo: cinemaID).get().then((value) {
+    await FirebaseFirestore.instance
+        .collection('Halls')
+        .where('cinema_id', isEqualTo: cinemaID)
+        .get()
+        .then((value) {
       for (var element in value.docs) {
         print(element.id);
         halls.add(HallsModel.fromMap(element.data()));
@@ -388,144 +407,117 @@ class AuthCubit extends Cubit<AuthState>
       emit(GetHallsError());
     });
   }
-  Future<void>createHalls({
-    required String name,
-    required String description,
-    required int seat,
-    required String cinemaID
-  }) async
-  {
+
+  Future<void> createHalls(
+      {required String name,
+      required String description,
+      required int seat,
+      required String cinemaID}) async {
     emit(CreateHallsLoading());
-    FirebaseFirestore.instance.collection('Halls').get().then((value) async
-    {
-      if(value.docs.isNotEmpty){
+    FirebaseFirestore.instance.collection('Halls').get().then((value) async {
+      if (value.docs.isNotEmpty) {
         for (var element in value.docs) {
-          if(element.data()['name']==name)
-          {
+          if (element.data()['name'] == name) {
             emit(CreateHallsError('this name is already exist'));
-          }else{
-            await  FirebaseFirestore.instance.collection('Halls').doc(name)
-                .set({
+          } else {
+            await FirebaseFirestore.instance.collection('Halls').doc(name).set({
               'name': name,
               'seats': seat,
               'description': description,
               'cinema_id': cinemaID,
             }).then((value) {
-
               emit(CreateHallsSuccessful());
-
-            }).catchError((error)
-            {
-              if(error.toString().contains('already exists'))
-              {
+            }).catchError((error) {
+              if (error.toString().contains('already exists')) {
                 emit(CreateHallsError('this hall is already exists'));
-              }
-              else
-              {
+              } else {
                 emit(CreateHallsError(error.toString()));
               }
-
             });
           }
         }
-      }else{
-        await  FirebaseFirestore.instance.collection('Halls').doc(name)
-            .set
-            ({
+      } else {
+        await FirebaseFirestore.instance.collection('Halls').doc(name).set({
           'name': name,
           'seats': seat,
           'description': description,
           'cinema_id': cinemaID,
         }).then((value) {
-
           emit(CreateHallsSuccessful());
-
-        }).catchError((error)
-        {
-          if(error.toString().contains('already exists'))
-          {
+        }).catchError((error) {
+          if (error.toString().contains('already exists')) {
             emit(CreateHallsError('this hall is already exists'));
-          }
-          else
-          {
+          } else {
             emit(CreateHallsError(error.toString()));
           }
-
         });
       }
-
     });
-
   }
-  Future<void>editHalls({
-    required String name,
-    required String description,
-    required int seat,
-    required String cinemaID
-  }) async
-  {
+
+  Future<void> editHalls(
+      {required String name,
+      required String description,
+      required int seat,
+      required String cinemaID}) async {
     emit(EditHallsLoading());
-    await FirebaseFirestore.instance.collection('Halls').doc(name).
-    update({
+    await FirebaseFirestore.instance.collection('Halls').doc(name).update({
       'name': name,
       'seats': seat,
       'description': description,
-    }).
-    then((value) {
+    }).then((value) {
       emit(EditHallsSuccessful());
-    }).
-    catchError((onError){
+    }).catchError((onError) {
       emit(EditHallsError());
     });
-
-
   }
-  Future<void>deleteHalls({
+
+  Future<void> deleteHalls({
     required String name,
-  }) async
-  {
+  }) async {
     emit(EditHallsLoading());
-    await FirebaseFirestore.instance.collection('Halls').doc(name).
-    delete().
-    then((value) {
+    await FirebaseFirestore.instance
+        .collection('Halls')
+        .doc(name)
+        .delete()
+        .then((value) {
       emit(EditHallsSuccessful());
-    }).
-    catchError((onError){
+    }).catchError((onError) {
       emit(EditHallsError());
     });
   }
-  Future<void>addNewMovie({
+
+  Future<void> addNewMovie({
     required String nameMovie,
     required String description,
     required String hall,
     required String time,
     required String cinemaID,
     required BuildContext context,
-
-  }) async
-  {
+    required int price,
+  }) async {
     bool isExist = false;
-    await FirebaseFirestore.instance.collection('Movie').where('hall',isEqualTo: hall)
-        .where('expire',isEqualTo: false).get().then((value){
+    await FirebaseFirestore.instance
+        .collection('Movie')
+        .where('hall', isEqualTo: hall)
+        .where('expire', isEqualTo: false)
+        .get()
+        .then((value) {
       for (var element in value.docs) {
         print(element.data()['time']);
-        if(element.data()['time']==time)
-        {
+        if (element.data()['time'] == time) {
           isExist = true;
           print("exist");
           print("hi");
           break;
         }
-
-        }
-    }).then((value) async{
-      if(isExist)
-      {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('this time is Booked in this hall')));
-
-      }else{
-        await uploadImageMovie(image, context).then((value) {
-        });
+      }
+    }).then((value) async {
+      if (isExist) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('this time is Booked in this hall')));
+      } else {
+        await uploadImageMovie(image, context).then((value) {});
         emit(AddNewFilmLoading());
 
         await FirebaseFirestore.instance.collection('Movie').add({
@@ -534,80 +526,310 @@ class AuthCubit extends Cubit<AuthState>
           'hall': hall,
           'image': imageUrl,
           'time': time,
-          'expire':false,
-          'cinemaID' :AuthCubit.get(context).userModel!.cinemaID,
-        }).
-        then((value) async{
-          await FirebaseFirestore.instance.collection('Movie').doc(value.id).update({
+          'expire': false,
+          'price' : price,
+          'cinemaID': AuthCubit.get(context).userModel!.cinemaID,
+        }).then((value) async {
+          await FirebaseFirestore.instance
+              .collection('Movie')
+              .doc(value.id)
+              .update({
             'id': value.id,
           });
           emit(AddNewFilmSuccessful());
-        }).
-        catchError((onError){
+        }).catchError((onError) {
           emit(AddNewFilmError());
         });
       }
     });
-
-
   }
-  List <MovieModel> movies = [];
-  Future<void>getMovies({required String cinemaID}) async{
+
+  List<MovieModel> movies = [];
+
+  Future<void> getMovies({required String cinemaID}) async {
     emit(GetFilmsLoading());
     movies = [];
-    await FirebaseFirestore.instance.collection('Movie').where('cinemaID',isEqualTo: cinemaID).get().then((value) {
-
+    await FirebaseFirestore.instance
+        .collection('Movie')
+        .where('cinemaID', isEqualTo: cinemaID)
+        .get()
+        .then((value) {
       value.docs.forEach((element) {
         print(element.data());
 
         movies.add(MovieModel.fromMap(element.data()));
       });
       emit(GetFilmsSuccessful());
-    }).catchError((error){
+    }).catchError((error) {
       emit(GetFilmsError());
     });
   }
-  Future<void>deleteMovie({required String id}) async{
+
+  Future<void> deleteMovie({required String id}) async {
     emit(DeleteFilmLoading());
-    await FirebaseFirestore.instance.collection('Movie').doc(id).delete().then((value) {
+    await FirebaseFirestore.instance
+        .collection('Movie')
+        .doc(id)
+        .delete()
+        .then((value) {
       emit(DeleteFilmSuccessful());
-    }).catchError((error){
+    }).catchError((error) {
       emit(DeleteFilmError());
     });
   }
-  Future<void>editFilm({required MovieModel movieModel}) async
-  {
+
+  Future<void> editFilm({required MovieModel movieModel}) async {
     emit(EditFilmLoading());
-    await FirebaseFirestore.instance.collection('Movie').doc(movieModel.id).update({
+    await FirebaseFirestore.instance
+        .collection('Movie')
+        .doc(movieModel.id)
+        .update({
       'nameMovie': movieModel.nameMovie,
       'description': movieModel.description,
       'hall': movieModel.hall,
       'image': movieModel.image,
       'time': movieModel.time,
-      'expire':movieModel.expire,
-      'cinemaID' :movieModel.cinemaID,
-    }).
-    then((value) {
+      'expire': movieModel.expire,
+      'cinemaID': movieModel.cinemaID,
+    }).then((value) {
       emit(EditFilmSuccessful());
-    }).
-    catchError((onError){
+    }).catchError((onError) {
       emit(EditFilmError());
     });
   }
-  List <MovieModel> hallInfo = [];
 
-  Future<void>getHallInfo({required String hallName , required String cinemaID}) async
-  {
+  List<MovieModel> hallInfo = [];
+
+  Future<void> getHallInfo(
+      {required String hallName, required String cinemaID}) async {
     emit(GetHallInfoLoading());
     hallInfo = [];
-    await FirebaseFirestore.instance.collection('Movie').where('hall',isEqualTo: hallName).where('cinemaID',isEqualTo:cinemaID ).get().then((value) {
+    await FirebaseFirestore.instance
+        .collection('Movie')
+        .where('hall', isEqualTo: hallName)
+        .where('cinemaID', isEqualTo: cinemaID)
+        .get()
+        .then((value) {
       print(value.docs.length);
       for (var element in value.docs) {
         hallInfo.add(MovieModel.fromMap(element.data()));
       }
       emit(GetHallInfoSuccessful());
-    }).catchError((error){
+    }).catchError((error) {
       emit(GetHallInfoError());
+    });
+  }
+
+  String? snckImageUrl;
+
+  Future<void> uploadMINIShops(XFile? file, BuildContext context) async {
+    emit(UploadImageStateLoading('loading'));
+    if (file == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No file was selected'),
+        ),
+      );
+
+      return;
+    }
+
+    UploadTask uploadTask;
+
+    // Create a Reference to the file
+    Reference ref = FirebaseStorage.instance.ref().child('/${file.name}');
+
+    final metadata = SettableMetadata(
+      contentType: 'image/jpeg',
+      customMetadata: {'picked-file-path': file.path},
+    );
+
+    if (kIsWeb) {
+      uploadTask = ref.putData(await file.readAsBytes(), metadata);
+    } else {
+      print('Amr2');
+      ref.putFile(io.File(file.path), metadata).then((p0) => {
+            ref.getDownloadURL().then((value) {
+              // here modify the profile pic
+              imageUrl = value;
+              emit(UploadImageStateSuccessful('upload done'));
+            })
+          });
+    }
+  }
+
+  Future<void> uploadSnackImage(XFile? file, BuildContext context) async {
+    emit(UploadImageStateLoading('loading'));
+    if (file == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No file was selected'),
+        ),
+      );
+
+      return;
+    }
+
+    UploadTask uploadTask;
+
+    // Create a Reference to the file
+    Reference ref = FirebaseStorage.instance.ref().child('/${file.name}');
+
+    final metadata = SettableMetadata(
+      contentType: 'image/jpeg',
+      customMetadata: {'picked-file-path': file.path},
+    );
+
+    if (kIsWeb) {
+      uploadTask = ref.putData(await file.readAsBytes(), metadata);
+    } else {
+      print('Amr2');
+      ref.putFile(io.File(file.path), metadata).then((p0) => {
+            ref.getDownloadURL().then((value) {
+              // here modify the profile pic
+              snckImageUrl = value;
+              emit(UploadImageStateSuccessful('upload done'));
+            })
+          });
+    }
+  }
+
+  XFile? image2;
+  XFile? imageSnack;
+
+  Future<void> pickImageGallaryMiniShops(BuildContext context) async {
+    image2 = await _picker.pickImage(source: ImageSource.gallery);
+    if (image2 == null) {
+    } else {
+      print(image2!.path);
+      await uploadMINIShops(image2, context).then((value) {});
+    }
+  }
+
+  Future<void> pickImageGallarySnack(BuildContext context) async {
+    imageSnack = await _picker.pickImage(source: ImageSource.gallery);
+    if (imageSnack == null) {
+    } else {
+      print(imageSnack!.path);
+      await uploadSnackImage(imageSnack, context).then((value) {});
+    }
+  }
+
+  Future<void> createMainShops(
+      {required String? name, required BuildContext context}) async {
+    emit(CreateMainShopesLaoding());
+    await FirebaseFirestore.instance.collection('shops').add({
+      'name': name,
+      'photo': imageUrl,
+      'cinemaId': AuthCubit.get(context).userModel!.cinemaID,
+    }).then((value) async {
+      await FirebaseFirestore.instance
+          .collection('shops')
+          .doc(value.id)
+          .update({
+        'id': value.id,
+      });
+      await FirebaseFirestore.instance
+          .collection('Cinemas')
+          .doc(AuthCubit.get(context).userModel!.cinemaID)
+          .update({
+        'number_of_mini_shops': FieldValue.increment(1),
+      });
+      emit(CreateMainShopesSuccessful());
+    }).catchError(() {
+      emit(CreateMainShopesLaoding());
+    });
+  }
+
+  List<MiniShopsModel> miniShops = [];
+
+  Future<void> getMiniShops({required String cinemaID}) async {
+    emit(GetMiniShopesLoading());
+    miniShops = [];
+    await FirebaseFirestore.instance
+        .collection('shops')
+        .where('cinemaId', isEqualTo: cinemaID)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        print(element.data());
+
+        miniShops.add(MiniShopsModel.fromMap(element.data()));
+      });
+      emit(GetMiniShopesSuccessful());
+    }).catchError((error) {
+      emit(GetMiniShopesError());
+    });
+  }
+
+  Future<void> addSnacks(
+      {required String name,
+      required int price,
+      required String miniShopId ,
+
+      }) async {
+    emit(AddSnacksLoading());
+    await FirebaseFirestore.instance.collection('Snacks').add({
+      'name': name,
+      'price': price,
+      'photo': snckImageUrl,
+      'miniShopId': miniShopId,
+      'cinemaId': userModel!.cinemaID,
+      'outOfStock': false,
+    }).then((value) async {
+      await FirebaseFirestore.instance
+          .collection('Snacks')
+          .doc(value.id)
+          .update({
+        'id': value.id,
+      });
+      emit(AddSnacksSuccessful());
+    }).catchError((error) {
+      emit(AddSnacksError());
+    });
+  }
+
+  List<SnacksModel> snacks = [];
+
+  Future<void> getSnacks({required String miniShopId}) async {
+    emit(GetSnacksLoading());
+    snacks = [];
+    await FirebaseFirestore.instance
+        .collection('Snacks')
+        .where('miniShopId', isEqualTo: miniShopId)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        print(element.data());
+
+        snacks.add(SnacksModel.fromMap(element.data()));
+      });
+      emit(GetSnacksSuccessful());
+    }).catchError((error) {
+      print(error.toString());
+      emit(GetSnacksError());
+    });
+  }
+
+  Future<void> editSnacks(
+      {required String name,
+      required int price,
+      required snackID,
+        required String photo,
+      required bool outOfStock}) async {
+    emit(EditSnacksLoading());
+    await FirebaseFirestore.instance
+        .collection('Snacks')
+        .doc(snackID)
+        .update({
+      'name': name,
+      'price': price,
+      'outOfStock': outOfStock,
+      'photo': photo,
+    }).then((value) {
+      emit(EditSnacksSuccessful());
+    }).catchError((error) {
+      emit(EditSnacksError());
     });
   }
 }

@@ -10,9 +10,11 @@ import 'package:time_range/time_range.dart';
 
 import '../../../model/cinema_owner_model/cinema_model.dart';
 import '../../../model/cinema_owner_model/halls_model.dart';
+import '../../../view/pages/cinema_owner/MainShopsScreen.dart';
 import '../../../view/pages/cinema_owner/MoviesScreen.dart';
 import '../../../view/pages/cinema_owner/ProfileScreen.dart';
 import '../../../view/pages/cinema_owner/TicketsScreen.dart';
+import '../../../view/pages/cinema_owner/chat_screen.dart';
 import '../../../view/pages/cinema_owner/hells.dart';
 import '../Get_halls/get_halls_cubit.dart';
 
@@ -27,6 +29,8 @@ class LayoutCinemaOwnerCubit extends Cubit<LayoutCinemaOwnerState> {
     const HallsScreen(),
     const MoviesScreen(),
     const TicketsScreen(),
+    const MainShopsScreen(),
+    const ChatScreenCinema(),
     const ProfileScreen(),
   ];
 

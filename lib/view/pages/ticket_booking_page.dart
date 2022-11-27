@@ -54,7 +54,7 @@ class TicketBookingPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AnimatedContainer(
-                    duration: Duration(milliseconds: 500),
+                    duration: const Duration(milliseconds: 500),
                     color: RED_COLOR,
                     width: 360.w / myCubit.barDividerNumber,
                     height: 1.h,

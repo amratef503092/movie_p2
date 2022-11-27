@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../view_model/cubit/auth/auth_cubit.dart';
+import 'cinema_Info.dart';
 
 class CinemaOwnerAdmin extends StatefulWidget {
   const CinemaOwnerAdmin({Key? key}) : super(key: key);
@@ -68,7 +69,10 @@ class _CinemaOwnerAdminState extends State<CinemaOwnerAdmin> {
                                       onPressed: () {
                                         authCubit.getAllCinemaOwner();
                                       },
-                                      icon: const Icon(Icons.refresh),
+                                      icon: const Icon(
+                                        Icons.refresh,
+                                        color: Colors.white,
+                                      ),
                                     )),
                                 Expanded(
                                   child: ListView.builder(
@@ -96,18 +100,31 @@ class _CinemaOwnerAdminState extends State<CinemaOwnerAdmin> {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                        "Name : ${authCubit.cinemaOwnerModel[index].name}" , style: TextStyle( fontSize: 20.sp,
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Colors.white),),
+                                                      "Name : ${authCubit.cinemaOwnerModel[index].name}",
+                                                      style: TextStyle(
+                                                          fontSize: 14.sp,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.white),
+                                                    ),
                                                     Text(
-                                                        "Phone : ${authCubit.cinemaOwnerModel[index].phone}", style: TextStyle(fontSize: 15.sp , color: Colors.white)),
+                                                        "Phone : ${authCubit.cinemaOwnerModel[index].phone}",
+                                                        style: TextStyle(
+                                                            fontSize: 15.sp,
+                                                            color:
+                                                                Colors.white)),
                                                     authCubit
                                                             .cinemaOwnerModel[
                                                                 index]
                                                             .online
                                                         ? Row(
                                                             children: const [
-                                                              Text("Status : " , style: TextStyle(color: Colors.white),),
+                                                              Text(
+                                                                "Status : ",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white),
+                                                              ),
                                                               Text(
                                                                 "online",
                                                                 style: TextStyle(
@@ -118,7 +135,10 @@ class _CinemaOwnerAdminState extends State<CinemaOwnerAdmin> {
                                                           )
                                                         : Row(
                                                             children: const [
-                                                              Text("Status : ",style: TextStyle(color: Colors.white)),
+                                                              Text("Status : ",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white)),
                                                               Text(
                                                                 "offline",
                                                                 style: TextStyle(
@@ -214,27 +234,20 @@ class _CinemaOwnerAdminState extends State<CinemaOwnerAdmin> {
                                                       FontAwesomeIcons.phone,
                                                       color: Colors.white,
                                                     )),
-                                                // IconButton(
-                                                //     onPressed: () {
-                                                //       LayoutCubit.get(context)
-                                                //           .x(authCubit
-                                                //           .cinemaOwnerModel[
-                                                //       index]);
-                                                //
-                                                //       Navigator.push(context,
-                                                //           MaterialPageRoute(
-                                                //             builder: (context) {
-                                                //               return LayOutUserPharmacy(
-                                                //                 pahrmacyModel: authCubit
-                                                //                     .cinemaOwnerModel[
-                                                //                 index],
-                                                //               );
-                                                //             },
-                                                //           ));
-                                                //     },
-                                                //     icon: FaIcon(
-                                                //       FontAwesomeIcons.shop,
-                                                //     ))
+                                                IconButton(
+                                                    onPressed: () {
+                                                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                                        return CinemaInfo
+                                                          (
+                                                          cinemaID: authCubit.cinemaOwnerModel[index].cinemaID,
+                                                        );
+
+                                                      },));
+                                                    },
+                                                    icon: FaIcon(
+                                                      FontAwesomeIcons.shop,
+                                                      color: Colors.white,
+                                                    ))
                                               ],
                                             ),
                                           );
@@ -258,40 +271,60 @@ class _CinemaOwnerAdminState extends State<CinemaOwnerAdmin> {
                                                     ),
                                                     Column(
                                                       crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: [
                                                         Text(
-                                                          "Name : ${authCubit.cinemaOwnerModel[index].name}" , style: TextStyle( fontSize: 20.sp,
-                                                            fontWeight: FontWeight.bold,
-                                                            color: Colors.white),),
-                                                        Text(
-                                                            "Phone : ${authCubit.cinemaOwnerModel[index].phone}", style: TextStyle(fontSize: 15.sp , color: Colors.white)),
-                                                        authCubit
-                                                            .cinemaOwnerModel[
-                                                        index]
-                                                            .online
-                                                            ? Row(
-                                                          children: const [
-                                                            Text("Status : " , style: TextStyle(color: Colors.white),),
-                                                            Text(
-                                                              "online",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .green),
-                                                            )
-                                                          ],
-                                                        )
-                                                            : Row(
-                                                          children: const [
-                                                            Text("Status : ",style: TextStyle(color: Colors.white)),
-                                                            Text(
-                                                              "offline",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .red),
-                                                            )
-                                                          ],
+                                                          "Name : ${authCubit.cinemaOwnerModel[index].name}",
+                                                          style: TextStyle(
+                                                              fontSize: 20.sp,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color:
+                                                                  Colors.white),
                                                         ),
+                                                        Text(
+                                                            "Phone : ${authCubit.cinemaOwnerModel[index].phone}",
+                                                            style: TextStyle(
+                                                                fontSize: 15.sp,
+                                                                color: Colors
+                                                                    .white)),
+                                                        authCubit
+                                                                .cinemaOwnerModel[
+                                                                    index]
+                                                                .online
+                                                            ? Row(
+                                                                children: const [
+                                                                  Text(
+                                                                    "Status : ",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                  Text(
+                                                                    "online",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .green),
+                                                                  )
+                                                                ],
+                                                              )
+                                                            : Row(
+                                                                children: const [
+                                                                  Text(
+                                                                      "Status : ",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.white)),
+                                                                  Text(
+                                                                    "offline",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .red),
+                                                                  )
+                                                                ],
+                                                              ),
                                                       ],
                                                     ),
                                                     // TextButton(

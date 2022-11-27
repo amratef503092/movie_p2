@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movie_flutterr/view/pages/auth/login_page.dart';
 import 'package:movie_flutterr/view_model/cubit/auth/auth_cubit.dart';
+import 'package:movie_flutterr/view_model/cubit/home%20page/home_page_cubit.dart';
 import 'package:movie_flutterr/view_model/cubit/layout_cinema_owner_cubit/layout_cinema_owner_cubit.dart';
+import 'package:movie_flutterr/view_model/cubit/main%20page/main_page_cubit.dart';
 import 'package:movie_flutterr/view_model/database/local/cache_helper.dart';
 import 'package:movie_flutterr/view_model/database/network/dio_helper.dart';
 
@@ -39,6 +41,12 @@ class MyApp extends StatelessWidget {
           providers: [
             BlocProvider(
               create: (context) => AuthCubit()..getUserData(),
+            ),
+            BlocProvider(
+              create: (context) => HomePageCubit(),
+            ),
+            BlocProvider(
+              create: (context) => MainPageCubit(),
             ),
             BlocProvider(
                 create: (context) => LayoutCinemaOwnerCubit()

@@ -53,10 +53,10 @@ class _CustomerScreenAdminState extends State<CustomerScreenAdmin> {
                         onPressed: () {
                           authCubit.getAllCinemaOwner();
                         },
-                        icon: const Icon(Icons.refresh),
+                        icon: const Icon(Icons.refresh , color: Colors.white,),
                       )),
                   const Center(
-                    child: Text("No Pharmacy Found"),
+                    child: Text("No User Found"),
                   )
                 ],
               )
@@ -68,7 +68,7 @@ class _CustomerScreenAdminState extends State<CustomerScreenAdmin> {
                         onPressed: () {
                           authCubit.getCustomerUSer();
                         },
-                        icon: const Icon(Icons.refresh),
+                        icon: const Icon(Icons.refresh , color: Colors.white,),
                       )),
                   Expanded(
                     child: ListView.builder(

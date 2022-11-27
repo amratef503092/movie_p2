@@ -26,6 +26,7 @@ class _AddMovieState extends State<AddMovie> {
   TextEditingController seat = TextEditingController();
 
   TextEditingController description = TextEditingController();
+  TextEditingController price = TextEditingController();
 
   RegExp regExp = RegExp(r"^[0-9][3]$", caseSensitive: false);
 
@@ -100,7 +101,7 @@ class _AddMovieState extends State<AddMovie> {
                             ],
                           ),
                           function: () {
-                            AuthCubit.get(context).pickImageGallary(context);
+                            AuthCubit.get(context).pickImageMovie(context);
                           },
                           disable: true),
                       SizedBox(
@@ -138,7 +139,20 @@ class _AddMovieState extends State<AddMovie> {
                         height: 20,
                       ),
 
-
+                      CustomTextField(
+                        controller: price,
+                        fieldValidator: (String value) {
+                          if (value.trim().isEmpty || value == '') {
+                            return 'This field is required';
+                          }
+                        },
+                        hint: 'description',
+                        textInputType: TextInputType.number,
+                        iconData: Icons.price_change,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       (state is GetHallsLoading)?Center(child: CircularProgressIndicator(),):SizedBox(
                         child: Row(
                           children: [
@@ -281,6 +295,7 @@ class _AddMovieState extends State<AddMovie> {
                                       AuthCubit.get(context)
                                           .addNewMovie(
                                         time: 'from $from to $to',
+                                          price: int.parse(price.text),
                                           nameMovie: nameController.text.trim(),
                                           description: description.text.trim(),
                                           hall: value!,

@@ -260,6 +260,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           password: passwordController.text.trim(),
                           gender: valueGender,
                           role: '3',
+                          age: ageController.text.trim(),
                           username: nameController.text.trim(),
                           phone: phoneController.text.trim(),
                         );

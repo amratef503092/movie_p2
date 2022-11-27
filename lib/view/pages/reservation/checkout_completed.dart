@@ -68,17 +68,17 @@ class CheckoutCompletedPage extends StatelessWidget {
       children: [
         CustomButtonOne(
             onClick: () {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ViewTicket(
-                          afterBooking: true,
-                          seats: myCubit.seats.join(", "),
-                          date: movieDate,
-                          time: myCubit.movieTime,
-                          price: '${myCubit.totalPrice} EGP',
-                          movieName: movieName)),
-                  (route) => false);
+              // Navigator.pushAndRemoveUntil(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) => ViewTicket(
+              //             afterBooking: true,
+              //             seats: myCubit.seats.join(", "),
+              //             date: movieDate,
+              //             time: myCubit.movieTime,
+              //             price: '${myCubit.totalPrice} EGP',
+              //             movieName: movieName)),
+              //     (route) => false);
             },
             buttonTitle: "View Ticket"),
         SizedBox(

@@ -14,6 +14,7 @@ import '../../../constants/validator.dart';
 import '../admin/layout_admin.dart';
 import '../cinema_owner/CinemaOwnerLayout.dart';
 import '../cinema_owner/add_cinema.dart';
+import '../main_page.dart';
 import '../main_page/home_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -115,9 +116,8 @@ class _LoginPageState extends State<LoginPage> {
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => HomePage(
-                              releasedMovies: const [],
-                              upComingMovies: const [],
+                        builder: (context) => MainPage(
+
                             )),
                     (route) => false);
               } else if (state.role=="2"){

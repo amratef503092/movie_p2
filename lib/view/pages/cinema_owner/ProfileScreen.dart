@@ -267,6 +267,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                                 CustomButton(
                                   function: () async {
+
                                     await FirebaseFirestore.instance
                                         .collection('users')
                                         .doc(CacheHelper.get(key: 'id'))
@@ -276,6 +277,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       await FirebaseAuth.instance.signOut();
                                     }).then((value) async {
                                       await CacheHelper.removeData(key: 'id');
+                                      AuthCubit.get(context).userModel = null;
                                       Navigator.pushAndRemoveUntil(
                                           context,
                                           MaterialPageRoute(

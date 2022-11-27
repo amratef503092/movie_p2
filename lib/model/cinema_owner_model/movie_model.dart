@@ -8,6 +8,7 @@ class MovieModel
   String nameMovie;
   String time;
   String cinemaID;
+  int price;
 
   MovieModel({
     required this.description,
@@ -18,6 +19,7 @@ class MovieModel
     required this.nameMovie,
     required this.time,
     required this.cinemaID,
+    required this.price,
   });
 
   Map<String, dynamic> toMap() {
@@ -30,6 +32,7 @@ class MovieModel
       'nameMovie': this.nameMovie,
       'time': this.time,
       'cinemaID': this.cinemaID,
+      'price': this.price,
     };
   }
 
@@ -43,6 +46,7 @@ class MovieModel
       nameMovie: map['nameMovie'] as String,
       time: map['time'] as String,
       cinemaID: map['cinemaID'] as String,
+      price: map['price'] as int,
     );
   }
 }
