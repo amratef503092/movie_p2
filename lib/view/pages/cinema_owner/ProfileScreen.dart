@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:time_range/time_range.dart';
+import 'package:time_range_picker/time_range_picker.dart';
 
 import '../../../constants/constants.dart';
 import '../../../constants/validator.dart';
@@ -20,7 +21,6 @@ class ProfileScreen extends StatefulWidget {
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
-
 class _ProfileScreenState extends State<ProfileScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -35,7 +35,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController phoneController = TextEditingController();
   bool showPassword = false;
   bool enable = false;
-
+  String? value;
+  String? from;
+  String? to;
   @override
   void initState() {
     // TODO: implement initState
@@ -44,7 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     emailController.text = AuthCubit.get(context).userModel!.email;
     super.initState();
   }
-  TimeRangeResult ? _timeRange;
+  TimeRange ? _timeRange;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
@@ -169,41 +171,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     // TODO: implement listener
                                   },
                                   builder: (context, state) {
+
                                     return (state is LayoutCinemaChangLoading)?
-                                    const Center(child: CircularProgressIndicator(),):TimeRange(
-                                      fromTitle: const Text(
-                                        'From',
-                                        style: TextStyle(
-                                            fontSize: 18, color: Colors.white),
-                                      ),
-                                      toTitle: const Text(
-                                        'To',
-                                        style: TextStyle(
-                                            fontSize: 18, color: Colors.white),
-                                      ),
-                                      titlePadding: 20,
-                                      textStyle: const TextStyle(
-                                          fontWeight: FontWeight.normal,
-                                          color: Colors.white),
-                                      activeTextStyle: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white),
-                                      borderColor: RED_COLOR,
-                                      backgroundColor: Colors.transparent,
-                                      activeBackgroundColor: RED_COLOR,
-                                      firstTime:
-                                          const TimeOfDay(hour: 14, minute: 0),
-                                      lastTime:
-                                          const TimeOfDay(hour: 20, minute: 00),
-                                      initialRange: TimeRangeResult(
-                                          TimeOfDay(hour: int.parse(LayoutCinemaOwnerCubit.get(context).cinemaModel!.open), minute: 00),
-                                          TimeOfDay(hour: int.parse(LayoutCinemaOwnerCubit.get(context).cinemaModel!.close), minute: 00)),
-                                      timeStep: 10,
-                                      timeBlock: 30,
-                                      onRangeCompleted: (range) =>
-                                          setState(() {
-                                            _timeRange = range;
-                                          }),
+                                    const Center(child: CircularProgressIndicator(),):
+                                    CustomButton(
+                                      function: () async {
+                                        if (_timeRange != null) {
+                                          _timeRange = await showTimeRangePicker(
+                                            end: _timeRange!.endTime,
+                                            start: _timeRange!.startTime,
+                                            onStartChange: (value) {
+                                              print(value);
+                                            },
+                                            context: context,
+                                          );
+                                        } else {
+                                          _timeRange = await showTimeRangePicker(
+                                            onStartChange: (value) {
+                                              if (kDebugMode) {
+                                                print(value);
+                                              }
+                                            },
+                                            context: context,
+                                          );
+                                        }
+
+                                        setState(() {
+                                          from = _timeRange!.startTime.format(context);
+                                          to = _timeRange!.endTime.format(context);
+                                        });
+                                      },
+                                      widget: (_timeRange != null)
+                                          ? Text("From : $from To $to")
+                                          : const Text('Select time'),
+                                      disable: true,
                                     );
                                   },
                                 ),
@@ -236,7 +237,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         : CustomButton(
                                             function: () async
                                               {
-                                                LayoutCinemaOwnerCubit.get(context).editCinemaInfo(open: _timeRange!.start.hour.toString(), close: _timeRange!.end.hour.toString());
+                                                LayoutCinemaOwnerCubit.get(context).
+                                                editCinemaInfo(open:
+                                                _timeRange!.startTime.hour.toString(),
+                                                    close: _timeRange!.endTime.hour.toString());
                                               if (formKey.currentState!
                                                   .validate()) {
                                                 AuthCubit.get(context)

@@ -64,7 +64,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ));
               }
               return Padding(
-                padding: EdgeInsets.only(bottom: 50),
+                padding: const EdgeInsets.only(bottom: 50),
                 child: ListView(
                   reverse: true,
                   children: messageWidgets,
@@ -189,8 +189,8 @@ class MessageLine extends StatelessWidget {
             ),
           )
         : Padding(
-            padding: EdgeInsets.all(22),
-            child: Container(
+            padding: const EdgeInsets.all(22),
+            child: SizedBox(
               width: double.infinity,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,7 +216,7 @@ class MessageLine extends StatelessWidget {
                   ),
                   Text(
                     DateFormat.yMEd().add_jms().format(DateTime.parse(date!)),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
                   )

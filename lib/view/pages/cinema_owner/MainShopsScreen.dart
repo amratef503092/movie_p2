@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_flutterr/view/components/custom_data_empty.dart';
 import 'package:movie_flutterr/view/pages/cinema_owner/MoviesScreen.dart';
 import 'package:movie_flutterr/view/pages/cinema_owner/add%20MainShops.dart';
 
@@ -60,7 +61,7 @@ class _MainShopsScreenState extends State<MainShopsScreen> {
                   },
                   disable: true,
                 ),
-                Padding(
+                (AuthCubit.get(context).miniShops.isEmpty)?DataEmptyWidget():Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: GridView.builder(
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

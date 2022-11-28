@@ -414,30 +414,38 @@ class AuthCubit extends Cubit<AuthState> {
       required String description,
       required int seat,
       required String cinemaID}) async {
+    bool foundHell = false;
     emit(CreateHallsLoading());
     FirebaseFirestore.instance.collection('Halls').get().then((value) async {
       if (value.docs.isNotEmpty) {
         for (var element in value.docs) {
           if (element.data()['name'] == name) {
-            emit(CreateHallsError('this name is already exist'));
-          } else {
-            await FirebaseFirestore.instance.collection('Halls').doc(name).set({
-              'name': name,
-              'seats': seat,
-              'description': description,
-              'cinema_id': cinemaID,
-            }).then((value) {
-              emit(CreateHallsSuccessful());
-            }).catchError((error) {
-              if (error.toString().contains('already exists')) {
-                emit(CreateHallsError('this hall is already exists'));
-              } else {
-                emit(CreateHallsError(error.toString()));
-              }
-            });
+            foundHell = true;
+            break;
           }
         }
-      } else {
+        if(foundHell){
+          emit(CreateHallsError('Hall Already Exist'));
+        }else {
+          await FirebaseFirestore.instance.collection('Halls').
+          doc(name).set({
+            'name': name,
+            'seats': seat,
+            'description': description,
+            'cinema_id': cinemaID,
+          }).then((value)
+          {
+            emit(CreateHallsSuccessful());
+          }).catchError((error) {
+            if (error.toString().contains('already exists')) {
+              emit(CreateHallsError('this hall is already exists'));
+            } else {
+              emit(CreateHallsError(error.toString()));
+            }
+          });
+        }
+      }
+      else {
         await FirebaseFirestore.instance.collection('Halls').doc(name).set({
           'name': name,
           'seats': seat,
@@ -446,11 +454,8 @@ class AuthCubit extends Cubit<AuthState> {
         }).then((value) {
           emit(CreateHallsSuccessful());
         }).catchError((error) {
-          if (error.toString().contains('already exists')) {
-            emit(CreateHallsError('this hall is already exists'));
-          } else {
-            emit(CreateHallsError(error.toString()));
-          }
+          emit(CreateHallsError(error.toString()));
+
         });
       }
     });

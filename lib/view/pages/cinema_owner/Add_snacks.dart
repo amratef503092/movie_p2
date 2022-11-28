@@ -33,6 +33,10 @@ class _AddSnacksState extends State<AddSnacks> {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         // TODO: implement listener
+        if(state is AddSnacksSuccessful){
+          AuthCubit.get(context).getSnacks(miniShopId: widget.miniShopsModel.id);
+        }
+
       },
       builder: (context, state) {
         return Scaffold(

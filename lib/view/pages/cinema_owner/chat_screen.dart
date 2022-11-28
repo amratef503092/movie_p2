@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_flutterr/view/chat_screen.dart';
+import 'package:movie_flutterr/view/components/custom_data_empty.dart';
 import 'package:movie_flutterr/view_model/cubit/auth/auth_cubit.dart';
 import 'package:movie_flutterr/view_model/cubit/main%20page/main_page_cubit.dart';
 
@@ -35,7 +36,7 @@ class _ChatScreenCinemaState extends State<ChatScreenCinema> {
               ? Center(
                   child: CircularProgressIndicator(),
                 )
-              : ListView.builder(
+              : (cubit.users.isEmpty)?DataEmptyWidget():ListView.builder(
                   itemCount: cubit.users.length,
                   itemBuilder: (context, index) {
                     return InkWell(

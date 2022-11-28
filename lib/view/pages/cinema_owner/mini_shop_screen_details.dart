@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_flutterr/model/cinema_owner_model/MiniShops_model.dart';
+import 'package:movie_flutterr/view/components/custom_data_empty.dart';
 import 'package:movie_flutterr/view/pages/cinema_owner/MoviesScreen.dart';
 import 'package:movie_flutterr/view_model/cubit/auth/auth_cubit.dart';
 
@@ -56,7 +57,7 @@ class _MiniShopDetalilsState extends State<MiniShopDetalils> {
     builder: (context, state) {
       return Padding(
         padding: const EdgeInsets.all(8.0),
-        child: GridView.builder(
+        child: (AuthCubit.get(context).snacks.isEmpty)?DataEmptyWidget():GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: 0.7,

@@ -58,7 +58,7 @@ class _HallsScreenState extends State<HallsScreen> {
                       },
                       disable: true,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     ListView.builder(

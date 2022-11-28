@@ -129,7 +129,7 @@ class _EditMovieState extends State<EditMovie> {
                       ),
 
 
-                      (state is GetHallsLoading) ? Center(
+                      (state is GetHallsLoading) ? const Center(
                         child: CircularProgressIndicator(),) : SizedBox(
                         child: Row(
                           children: [

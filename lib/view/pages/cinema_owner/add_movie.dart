@@ -4,8 +4,8 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:from_to_time_picker/from_to_time_picker.dart';
 import 'package:movie_flutterr/view/components/custom_textfield.dart';
+import 'package:time_range_picker/time_range_picker.dart';
 
 import '../../../constants/constants.dart';
 import '../../../view_model/cubit/auth/auth_cubit.dart';
@@ -40,8 +40,10 @@ class _AddMovieState extends State<AddMovie> {
   }
 
   String? value;
-  String ?from;
-  String ? to;
+  String? from;
+  String? to;
+  TimeRange? _timeRange;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,6 +58,10 @@ class _AddMovieState extends State<AddMovie> {
           child: BlocConsumer<AuthCubit, AuthState>(
             listener: (context, state) {
               // TODO: implement listener
+              if (state is AddNewFilmSuccessful) {
+                AuthCubit.get(context).getMovies(
+                    cinemaID: AuthCubit.get(context).userModel!.cinemaID);
+              }
             },
             builder: (context, state) {
               return SingleChildScrollView(
@@ -146,96 +152,107 @@ class _AddMovieState extends State<AddMovie> {
                             return 'This field is required';
                           }
                         },
-                        hint: 'description',
+                        hint: 'price',
                         textInputType: TextInputType.number,
                         iconData: Icons.price_change,
                       ),
                       const SizedBox(
                         height: 20,
                       ),
-                      (state is GetHallsLoading)?Center(child: CircularProgressIndicator(),):SizedBox(
-                        child: Row(
-                          children: [
-                            const Text(
-                              'Select Hall',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                             SizedBox(
-                              width: 20.w,
-                            ),
-                            SizedBox(
-                              width: 200.w,
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton2(
-                                  hint: const Text(
-                                    'Select Item',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white,
+                      (state is GetHallsLoading)
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : SizedBox(
+                              child: Row(
+                                children: [
+                                  const Text(
+                                    'Select Hall',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  SizedBox(
+                                    width: 20.w,
+                                  ),
+                                  SizedBox(
+                                    width: 200.w,
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton2(
+                                        hint: const Text(
+                                          'Select Item',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        items: AuthCubit.get(context)
+                                            .halls
+                                            .map((item) =>
+                                                DropdownMenuItem<String>(
+                                                  value: item.name,
+                                                  child: Text(
+                                                    item.name,
+                                                    style: const TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.white),
+                                                  ),
+                                                ))
+                                            .toList(),
+                                        value: value,
+                                        dropdownDecoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(14),
+                                          color: BACKGROUND_COLOR,
+                                        ),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            this.value = value as String;
+                                          });
+                                        },
+                                        buttonHeight: 40,
+                                        buttonWidth: 140,
+                                        itemHeight: 40,
+                                      ),
                                     ),
                                   ),
-                                  items: AuthCubit.get(context)
-                                      .halls
-                                      .map((item) => DropdownMenuItem<String>(
-                                            value: item.name,
-                                            child: Text(
-                                              item.name,
-                                              style: const TextStyle(
-                                                  fontSize: 14, color: Colors.white),
-                                            ),
-                                          ))
-                                      .toList(),
-                                  value: value,
-                                  dropdownDecoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14),
-                                    color: BACKGROUND_COLOR,
-                                  ),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      this.value = value as String;
-                                    });
-                                  },
-                                  buttonHeight: 40,
-                                  buttonWidth: 140,
-                                  itemHeight: 40,
-                                ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
                       SizedBox(
                         height: 50.h,
                       ),
-                      CustomButton(function: (){
-                        showDialog(
-                          context: context,
-                          builder: (_) => FromToTimePicker(
-                            onTab: (from, to) {
-                              this.from = from.hour.toString() + ':' + to.minute.toString();
-                              this.to = to.hour.toString() + ':' + to.minute.toString();
-                              print('from ${this.from} to ${this.to}');
-                            },
-                            dialogBackgroundColor: Color(0xFF121212),
-                            fromHeadlineColor: Colors.white,
-                            toHeadlineColor: Colors.white,
-                            upIconColor: Colors.white,
-                            downIconColor: Colors.white,
-                            timeBoxColor: Color(0xFF1E1E1E),
-                            timeHintColor: Colors.grey,
-                            timeTextColor: Colors.white,
-                            dividerColor: Color(0xFF121212),
-                            doneTextColor: Colors.white,
-                            dismissTextColor: Colors.white,
-                            defaultDayNightColor: Color(0xFF1E1E1E),
-                            defaultDayNightTextColor: Colors.white,
-                            colonColor: Colors.white,
-                            showHeaderBullet: true,
-                            headerText: 'Time available from 01:00 AM to 11:00 PM',
-                          ),
-                        );
-                      },widget: const Text("Select Time"),
-                        disable: true,),
+                      CustomButton(
+                        function: () async {
+                          if (_timeRange != null) {
+                            _timeRange = await showTimeRangePicker(
+                              end: _timeRange!.endTime,
+                              start: _timeRange!.startTime,
+                              onStartChange: (value) {
+                                print(value);
+                              },
+                              context: context,
+                            );
+                          } else {
+                            _timeRange = await showTimeRangePicker(
+                              onStartChange: (value) {
+                                print(value);
+                              },
+                              context: context,
+                            );
+                          }
+
+                          setState(() {
+                            from = _timeRange!.startTime.format(context);
+                            to = _timeRange!.endTime.format(context);
+                          });
+                        },
+                        widget: (_timeRange != null)
+                            ? Text("From : " +
+                                from.toString() +
+                                " To " +
+                                to.toString())
+                            : const Text('Select time'),
+                        disable: true,
+                      ),
                       SizedBox(
                         height: 50.h,
                       ),
@@ -244,7 +261,7 @@ class _AddMovieState extends State<AddMovie> {
                           // TODO: implement listener
                           if (state is AddNewFilmError) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
+                              const SnackBar(
                                 backgroundColor: Colors.red,
                                 content: Text('Error'),
                               ),
@@ -274,15 +291,17 @@ class _AddMovieState extends State<AddMovie> {
                                   disable: true,
                                   widget: const Text("Add Movie"),
                                   function: () {
-                                    if(value == null){
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                    if (value == null) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         const SnackBar(
                                           backgroundColor: Colors.red,
                                           content: Text('Please Select Hall'),
                                         ),
                                       );
-                                    }else if(from == null || to == null){
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                    } else if (from == null || to == null) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         const SnackBar(
                                           backgroundColor: Colors.red,
                                           content: Text('Please Select Time'),
@@ -291,17 +310,19 @@ class _AddMovieState extends State<AddMovie> {
                                     }
 
                                     if (formKey.currentState!.validate() &&
-                                        AuthCubit.get(context).image != null&& to !=null && from !=null) {
-                                      AuthCubit.get(context)
-                                          .addNewMovie(
-                                        time: 'from $from to $to',
+                                        AuthCubit.get(context).image != null &&
+                                        to != null &&
+                                        from != null) {
+                                      AuthCubit.get(context).addNewMovie(
+                                          time: 'from $from to $to',
                                           price: int.parse(price.text),
                                           nameMovie: nameController.text.trim(),
                                           description: description.text.trim(),
                                           hall: value!,
                                           cinemaID: AuthCubit.get(context)
                                               .userModel!
-                                              .cinemaID, context: context);
+                                              .cinemaID,
+                                          context: context);
                                     }
                                   });
                         },
