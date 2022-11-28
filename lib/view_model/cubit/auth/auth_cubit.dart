@@ -234,13 +234,14 @@ class AuthCubit extends Cubit<AuthState> {
         .get()
         .then((value) {
       print(value.docs.length);
-      value.docChanges.forEach((element) {
+      print("Amr pjpaodjfpadkapodkpaosdo");
+      for (var element in value.docChanges) {
         if (element.doc.data()!['id'] == CacheHelper.get(key: 'id')) {
           print('same');
         } else {
           adminData.add(UserModel.fromMap(element.doc.data()!));
         }
-      });
+      }
       emit(GetAdminsStateSuccessful('loading'));
     }).catchError((onError) {
       print(onError.toString());

@@ -99,10 +99,10 @@ class _FiltrationCinemaAddressState extends State<FiltrationCinemaAddress> {
                             itemCount: snapshots.data!.docs.length,
                             itemBuilder: (context, index) {
                               cinemaModel = [];
-                              snapshots.data!.docs.forEach((element) {
+                              for (var element in snapshots.data!.docs) {
                                 cinemaModel.add(CinemaModel.fromMap(
                                     element.data() as Map<String, dynamic>));
-                              });
+                              }
                               if (name.isEmpty) {
                                 return InkWell(
                                   onTap: () {

@@ -2,7 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:movie_flutterr/view/pages/admin/layout_admin.dart';
 import 'package:movie_flutterr/view/pages/auth/login_page.dart';
+import 'package:movie_flutterr/view/pages/cinema_owner/CinemaOwnerLayout.dart';
+import 'package:movie_flutterr/view/pages/main_page.dart';
 import 'package:movie_flutterr/view_model/cubit/auth/auth_cubit.dart';
 import 'package:movie_flutterr/view_model/cubit/home%20page/home_page_cubit.dart';
 import 'package:movie_flutterr/view_model/cubit/layout_cinema_owner_cubit/layout_cinema_owner_cubit.dart';
@@ -55,6 +58,16 @@ class MyApp extends StatelessWidget {
           ],
           child: MaterialApp(
             theme: ThemeData(
+              appBarTheme: const AppBarTheme(
+                backgroundColor: BACKGROUND_COLOR,
+                elevation: 0,
+                iconTheme: IconThemeData(color: Colors.white),
+                titleTextStyle: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               primarySwatch: Colors.blue,
               scaffoldBackgroundColor: BACKGROUND_COLOR,
               buttonColor: RED_COLOR,
@@ -80,7 +93,13 @@ class MyApp extends StatelessWidget {
               ),
             ),
             debugShowCheckedModeBanner: false,
-            home: /*CacheHelper.get(key: LOGIN_CHECK_KEY)? HomePage() :*/ LoginPage(),
+            home: (CacheHelper.get(key: 'id') != null)
+                ? (CacheHelper.get(key: 'role') == '1')
+                    ? const LayOutScreenAdmin()
+                    : (CacheHelper.get(key: 'role') == '2')
+                        ? const CinemaOwnerLayout()
+                        : const MainPage()
+                : LoginPage(),
           ),
         );
       },

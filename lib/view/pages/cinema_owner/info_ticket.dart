@@ -131,7 +131,7 @@ class _infoScreenState extends State<infoScreen> {
               Positioned(
                 height: 0.5.sh,
                 top: 500,
-                child: Row(
+                child: (widget.orderStatus != 'Pending')? SizedBox():Row(
                   children: [
                     ElevatedButton(onPressed: ()
                     {

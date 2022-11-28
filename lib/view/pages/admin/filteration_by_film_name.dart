@@ -6,10 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_flutterr/model/cinema_owner_model/movie_model.dart';
 import 'package:movie_flutterr/view_model/cubit/main%20page/main_page_cubit.dart';
 
-import '../../../view_model/cubit/auth/auth_cubit.dart';
 import '../../../view_model/cubit/home page/home_page_cubit.dart';
 import '../cinema_owner/MoviesScreen.dart';
-import '../user/detiles_screen.dart';
 import 'movie_info.dart';
 
 class FiltartionByFilmName extends StatefulWidget {
@@ -25,16 +23,13 @@ class _FiltartionByFilmNameState extends State<FiltartionByFilmName> {
   @override
   void initState() {
     // TODO: implement initState
-    MainPageCubit.get(context).getReleasedMoviesData();
     super.initState();
   }
 
   TextEditingController searchController = TextEditingController();
 
   String name = '';
-
-  List<MovieModel> movieModel = [];
-
+  List<MovieModel>searchModel = [];
   Widget build(BuildContext context) {
     return BlocConsumer<MainPageCubit, MainPageState>(
       listener: (context, state) {
@@ -89,71 +84,126 @@ class _FiltartionByFilmNameState extends State<FiltartionByFilmName> {
                 stream:
                     FirebaseFirestore.instance.collection('Movie').snapshots(),
                 builder: (context, snapshots) {
-                  return (snapshots.connectionState == ConnectionState.waiting)
-                      ? const Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : Expanded(
-                          child: GridView.builder(
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                childAspectRatio: 0.7,
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                              ),
-                              itemCount: snapshots.data!.docs.length,
-                              itemBuilder: (context, index) {
-                                movieModel = [];
-                                for (var element in snapshots.data!.docs) {
-                                  movieModel.add(MovieModel.fromMap(
-                                      element.data() as Map<String, dynamic>));
-                                }
-                                if (name.isEmpty) {
-                                  return CustomCardMovie(
-                                    function: () {
-                                      Navigator.push(context, MaterialPageRoute(
-                                        builder: (context) {
-                                          return MovieScreenInfo(
-                                            movie: MainPageCubit.get(context).movies[index],
-                                          );
-                                        },
-                                      ));
-                                    },
-                                    title: MainPageCubit.get(context)
-                                        .movies[index]
-                                        .nameMovie,
-                                    image: MainPageCubit.get(context)
-                                        .movies[index]
-                                        .image,
-                                  );
-                                }
-                                if (movieModel[index]
-                                    .nameMovie
-                                    .toString()
-                                    .toLowerCase()
-                                    .startsWith(name.toLowerCase())) {
-                                  return CustomCardMovie(
-                                    function: () {
-                                      Navigator.push(context, MaterialPageRoute(
-                                        builder: (context) {
-                                          return MovieScreenInfo(
-                                            movie: MainPageCubit.get(context).movies[index],
-                                          );
-                                        },
-                                      ));
-                                    },
-                                    title: MainPageCubit.get(context)
-                                        .movies[index]
-                                        .nameMovie,
-                                    image: MainPageCubit.get(context)
-                                        .movies[index]
-                                        .image,
-                                  );
-                                }
-                                return Container();
-                              }),
-                        );
+
+                   if(snapshots.connectionState == ConnectionState.waiting){
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }else {
+                     if(name.isEmpty)
+                     {
+                      return Expanded(
+                        child: GridView.builder(
+                            gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 0.7,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                            ),
+                            itemCount: snapshots.data!.docs.length,
+                            itemBuilder: (context, index) {
+                              List<MovieModel> movieModel = [];
+                              for (var element in snapshots.data!.docs) {
+                                movieModel.add(MovieModel.fromMap(
+                                    element.data() as Map<String, dynamic>));
+                              }
+                              if (name.isEmpty) {
+                                return CustomCardMovie(
+                                  function: () {
+                                    Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) {
+                                        return MovieScreenInfo(
+                                          movie: movieModel[index],
+                                        );
+                                      },
+                                    ));
+                                  },
+                                  title: movieModel[index].nameMovie,
+                                  image: movieModel[index].image,
+                                );
+                              } else if (snapshots
+                                  .data!.docs[index]['nameMovie']
+                                  .toString()
+                                  .toLowerCase()
+                                  .startsWith(name.toLowerCase()))
+                              {
+                                return CustomCardMovie(
+                                  function: () {
+                                    Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) {
+                                        return MovieScreenInfo(
+                                          movie: movieModel[index],
+                                        );
+                                      },
+                                    ));
+                                  },
+                                  title: movieModel[index].nameMovie,
+                                  image: movieModel[index].image,
+                                );
+                              }
+                              return Container();
+                            }),
+                      );
+                     }
+                     else{
+                       return  Expanded(
+                         child: GridView.builder(
+                             gridDelegate:
+                             const SliverGridDelegateWithFixedCrossAxisCount(
+                               crossAxisCount: 2,
+                               childAspectRatio: 0.7,
+                               crossAxisSpacing: 10,
+                               mainAxisSpacing: 10,
+                             ),
+                             itemCount: snapshots.data!.docs.length,
+                             itemBuilder: (context, index) {
+                               List<MovieModel> movieModel = [];
+                               for (var element in snapshots.data!.docs) {
+                                 movieModel.add(MovieModel.fromMap(
+                                     element.data() as Map<String, dynamic>));
+                               }
+                               if (name.isEmpty) {
+                                 return CustomCardMovie(
+                                   function: () {
+                                     Navigator.push(context, MaterialPageRoute(
+                                       builder: (context) {
+                                         return MovieScreenInfo(
+                                           movie: movieModel[index],
+                                         );
+                                       },
+                                     ));
+                                   },
+                                   title: movieModel[index].nameMovie,
+                                   image: movieModel[index].image,
+                                 );
+                               } else if (snapshots
+                                   .data!.docs[index]['nameMovie']
+                                   .toString()
+                                   .toLowerCase()
+                                   .startsWith(name.toLowerCase()))
+                               {
+                                 return CustomCardMovie(
+                                   function: () {
+                                     Navigator.push(context, MaterialPageRoute(
+                                       builder: (context) {
+                                         return MovieScreenInfo(
+                                           movie: movieModel[index],
+                                         );
+                                       },
+                                     ));
+                                   },
+                                   title: movieModel[index].nameMovie,
+                                   image: movieModel[index].image,
+                                 );
+                               }
+                               return Container();
+                             }),
+                       );
+                     }
+
+                   }
+
                 },
               ),
             ],

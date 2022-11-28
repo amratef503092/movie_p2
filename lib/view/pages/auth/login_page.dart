@@ -34,7 +34,16 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => LoginCubit(),
-      child: BlocBuilder<LoginCubit, LoginState>(
+      child: BlocConsumer<LoginCubit, LoginState>(
+        listener:  (context, state) {
+          if(state is UserLoginSuccess){
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Login Success")));
+          }else if (state is UserLoginFailed )
+          {
+            ScaffoldMessenger.of(context).showSnackBar( SnackBar(content: Text(state.message),backgroundColor: Colors.red,));
+
+          }
+        },
         builder: (context, state) {
           LoginCubit myCubit = LoginCubit.get(context);
           return Scaffold(
@@ -110,17 +119,18 @@ class _LoginPageState extends State<LoginPage> {
           listener: (context, state) {
             // TODO: implement listener
             if (state is UserLoginSuccess) {
-
-
+              // user
               if (state.role == "3") {
+
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => MainPage(
+                        builder: (context) => const MainPage(
 
                             )),
                     (route) => false);
               } else if (state.role=="2"){
+                // cinema
                 if(state.cinemaID =='')
                 {
                   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:  (context)=>const CreateCinema()), (route) => false);
@@ -129,6 +139,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 }
               }else {
+                // admin
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(

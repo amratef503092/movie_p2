@@ -25,43 +25,59 @@ class SignupCubit extends Cubit<SignupState> {
     required String phone,
     required String age,
   }) async {
+    bool phoneFound = false;
     // register function start
     emit(RegisterLoadingState());
-    await FirebaseAuth
-        .instance // firebase auth this library i use it to register i send request Email and password
-        .createUserWithEmailAndPassword(email: email, password: password)
-        .then((value) async {
-      print(phone);
-      // if register successful i will add user data to firebase
-      user = UserModel(
-        age: age,
-        ban: false,
-        cinemaID: '',
-        gender: gender,
-        email: email,
-        phone: phone,
-        id: value.user!.uid,
-        online: false,
-        photo:
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTH6PjyUR8U-UgBWkOzFe38qcO29regN43tlGGk4sRd&s',
-        role: role,
-        name: username,
-      );
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(value.user!.uid)
-          .set(user!.toMap())
-          .then((value) async {
-        emit(RegisterSuccessfulState());
-      });
-    }).catchError((onError) {
-      if (onError is FirebaseAuthException) {
-        print(onError.message);
-        emit(RegisterErrorState(message: onError.message!));
+    await FirebaseFirestore.instance.collection('users').get().then((value) {
+      for (var element in value.docs) {
+        if(element.data()['phone']==phone){
+          phoneFound = true;
+          break;
+        }
       }
-    }).catchError((e) {
-      print(e.toString());
     });
+    if(phoneFound)
+    {
+      emit(PhoneISNotUnique());
+    }else{
+      await FirebaseAuth
+          .instance // firebase auth this library i use it to register i send request Email and password
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) async {
+        print(phone);
+
+        // if register successful i will add user data to firebase
+        user = UserModel(
+          age: age,
+          ban: false,
+          cinemaID: '',
+          gender: gender,
+          email: email,
+          phone: phone,
+          id: value.user!.uid,
+          online: false,
+          photo:
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTH6PjyUR8U-UgBWkOzFe38qcO29regN43tlGGk4sRd&s',
+          role: role,
+          name: username,
+        );
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(value.user!.uid)
+            .set(user!.toMap())
+            .then((value) async {
+          emit(RegisterSuccessfulState());
+        });
+      }).catchError((onError) {
+        if (onError is FirebaseAuthException) {
+          print(onError.message);
+          emit(RegisterErrorState(message: onError.message!));
+        }
+      }).catchError((e) {
+        print(e.toString());
+      });
+    }
+
   }
 
   CinemaModel? cinemas;

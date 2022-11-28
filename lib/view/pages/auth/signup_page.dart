@@ -245,6 +245,22 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   );
                   Navigator.pop(context);
+                }else if(state is RegisterErrorState)
+                {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                     SnackBar(
+                      content: Text(state.message),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }else if(state is PhoneISNotUnique )
+                {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("This Number Recorded in Database"),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               },
               builder: (context, state) {

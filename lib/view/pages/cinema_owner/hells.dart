@@ -36,13 +36,12 @@ class _HallsScreenState extends State<HallsScreen> {
           ),
           body: SizedBox(
             width: double.infinity,
-            child: RefreshIndicator(
-              onRefresh: () async {
-                AuthCubit.get(context).getHalls(
-                    cinemaID: AuthCubit.get(context).userModel!.cinemaID);
-              },
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  AuthCubit.get(context).getHalls(cinemaID: AuthCubit.get(context).userModel!.cinemaID);
+                },
                 child: Column(
                   children: [
                     const SizedBox(
@@ -58,6 +57,9 @@ class _HallsScreenState extends State<HallsScreen> {
                         ));
                       },
                       disable: true,
+                    ),
+                    SizedBox(
+                      height: 20,
                     ),
                     ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),

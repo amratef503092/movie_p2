@@ -161,20 +161,20 @@ class _TicketsScreenState extends State<TicketsScreen> {
                                   height: 20,
                                   width: 80,
                                   onClick: () {
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //       builder: (context) => infoScreen(
-                                    //         userID: getTicket.userID,
-                                    //           orderStatus: getTicket.orderStatus,
-                                    //           cinema: MainPageCubit.get(context).cinema[index],
-                                    //           date: getTicket.date,
-                                    //           time: getTicket.time,
-                                    //           price: getTicket.totalPrice.toString(),
-                                    //           movieName: getTicket.movieName,
-                                    //           ticketID: getTicket.ticketId,
-                                    //           afterBooking: false),
-                                    //     ));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => infoScreen(
+                                            userID: getTicket.userID,
+                                              orderStatus: getTicket.orderStatus,
+                                              cinema: MainPageCubit.get(context).cinema[index],
+                                              date: getTicket.date,
+                                              time: getTicket.time,
+                                              price: getTicket.totalPrice.toString(),
+                                              movieName: getTicket.movieName,
+                                              ticketID: getTicket.ticketId,
+                                              afterBooking: false),
+                                        ));
                                   },
                                   buttonTitle: "View Ticket"),
                               SizedBox(

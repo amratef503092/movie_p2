@@ -3,14 +3,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:movie_flutterr/constants/constants.dart';
 import 'package:movie_flutterr/view_model/cubit/auth/auth_cubit.dart';
 
 class ChatScreen extends StatefulWidget {
-  ChatScreen({Key? key, required this.receiverId, required this.receiverName ,
-  required this.cinema,
-    required this.cinemaID,
-    required this.userID
-  })
+  ChatScreen(
+      {Key? key,
+      required this.receiverId,
+      required this.receiverName,
+      required this.cinema,
+      required this.cinemaID,
+      required this.userID})
       : super(key: key);
   String receiverId;
   String receiverName;
@@ -34,8 +37,8 @@ class _ChatScreenState extends State<ChatScreen> {
       body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
               .collection('Messages')
-              .where('User', isEqualTo:  widget.userID)
-              .where('cinema',isEqualTo: widget.cinemaID )
+              .where('User', isEqualTo: widget.userID)
+              .where('cinema', isEqualTo: widget.cinemaID)
               .orderBy('date')
               .snapshots(),
           builder: (context, snapshot) {
@@ -43,21 +46,28 @@ class _ChatScreenState extends State<ChatScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else {
+              final messages = snapshot.data!.docs.reversed;
+              List<MessageLine> messageWidgets = [];
+
+              for (var message in messages) {
+
+                final messageText = message.get('message');
+
+                messageWidgets.add(MessageLine
+                  (
+                  isMe: message['SenderID'] ==
+                      FirebaseAuth.instance.currentUser!.uid,
+                  date: message['date'],
+                  messageID: message.id,
+                  messageText: message['message'],
+                  sender: message['SenderName'],
+                ));
+              }
               return Padding(
-                padding: const EdgeInsets.only(bottom: 35.0),
-                child: ListView.builder(
-                  reverse: false,
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    return MessageLine(
-                      isMe: snapshot.data!.docs[index]['SenderID'] ==
-                          FirebaseAuth.instance.currentUser!.uid,
-                      date: snapshot.data!.docs[index]['date'],
-                      messageID: snapshot.data!.docs[index]['messageID'],
-                      messageText: snapshot.data!.docs[index]['message'],
-                      sender: snapshot.data!.docs[index]['SenderName'],
-                    );
-                  },
+                padding: EdgeInsets.only(bottom: 50),
+                child: ListView(
+                  reverse: true,
+                  children: messageWidgets,
                 ),
               );
             }
@@ -71,7 +81,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 height: 50,
                 child: TextField(
                   controller: messageController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Type a message',
                     border: InputBorder.none,
                   ),
@@ -80,10 +90,9 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
             IconButton(
               onPressed: () async {
-                if(messageController.text==''){
+                if (messageController.text == '') {
                   return;
-
-                }else{
+                } else {
                   await FirebaseFirestore.instance.collection('Messages').add({
                     'message': messageController.text,
                     'userID': FirebaseAuth.instance.currentUser!.uid,
@@ -94,20 +103,12 @@ class _ChatScreenState extends State<ChatScreen> {
                     'date': DateTime.now().toString(),
                     "User": widget.userID,
                     "cinema": widget.cinemaID,
-                  }).then((value) async {
-                    FirebaseFirestore.instance
-                        .collection('Messages')
-                        .doc(value.id)
-                        .update({
-                      'messageID': value.id,
-                    });
                   });
                   if (kDebugMode) {
                     print('Send');
                     messageController.clear();
                   }
                 }
-
               },
               icon: const Icon(Icons.send),
             ),
@@ -120,7 +121,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
 class MessageLine extends StatelessWidget {
   MessageLine(
-      {this.messageText,
+      {super.key, this.messageText,
       this.sender,
       required this.date,
       this.isMe,
@@ -142,7 +143,7 @@ class MessageLine extends StatelessWidget {
             onTap: () async {
               if (DateTime.now().difference(now).inSeconds > 30) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("can not delete Message")));
+                    const SnackBar(content: Text("can not delete Message")));
               } else {
                 await FirebaseFirestore.instance
                     .collection('Messages')
@@ -173,12 +174,12 @@ class MessageLine extends StatelessWidget {
                         padding: const EdgeInsets.all(14.0),
                         child: Text('$messageText',
                             style:
-                                TextStyle(color: Colors.black, fontSize: 14)),
+                                const TextStyle(color: Colors.black, fontSize: 14)),
                       ),
                     ),
                     Text(
                       DateFormat.yMEd().add_jms().format(DateTime.parse(date!)),
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                       ),
                     )
@@ -194,20 +195,20 @@ class MessageLine extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('$sender'),
+                  Text('$sender', style: TextStyle(color: Colors.white)),
                   Material(
                     elevation: 2,
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(30),
                         bottomRight: Radius.circular(30),
                         topRight: Radius.circular(30)),
-                    color: Color(0xffAAACAE),
+                    color: RED_COLOR,
                     child: Padding(
                       padding: const EdgeInsets.all(14.0),
                       child: Text(
                         '$messageText',
-                        style: TextStyle(
-                          color: Color(0xff1A1D21),
+                        style: const TextStyle(
+                          color: Colors.white,
                           fontSize: 14,
                         ),
                       ),

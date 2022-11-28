@@ -106,7 +106,9 @@ class _MovieScreenInfoState extends State<MovieScreenInfo> {
                       ),
                     ],
                   ),
-                  (state is GetHallInfoLoading)?Center(child: CircularProgressIndicator(),):Text(
+                  (state is GetHallInfoLoading)?const
+                  Center(child: CircularProgressIndicator(),):
+                  Text(
                     "Available Seats: ${MainPageCubit.get(context).hallsModel!.seats}",
                     style: const TextStyle(color: Colors.white),
                   ),

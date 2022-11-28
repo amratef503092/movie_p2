@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../constants/color_manager.dart';
 
-
 class CustomTextField extends StatelessWidget {
   CustomTextField({
     required this.controller,
@@ -26,11 +25,12 @@ class CustomTextField extends StatelessWidget {
   final bool passwordTwo;
   final Function fieldValidator;
   final Function? function;
-  final IconData ?iconData;
+  final IconData? iconData;
   final TextInputType textInputType;
   final bool enable;
-  final int maxLine ;
-  List<TextInputFormatter> ?formate;
+  final int maxLine;
+
+  List<TextInputFormatter>? formate;
 
   @override
   Widget build(BuildContext context) {
@@ -38,47 +38,51 @@ class CustomTextField extends StatelessWidget {
       inputFormatters: formate,
       controller: controller,
       validator: (value) => fieldValidator(value),
-      keyboardType : textInputType,
+      keyboardType: textInputType,
       enabled: enable,
       maxLines: maxLine,
-      style: TextStyle(color: Colors.white),
-
+      style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
-
-          icon: Icon(iconData , color: Colors.white,),
-          hintStyle: TextStyle(color: Colors.white,fontSize: 15.sp),
-
+          icon: Icon(
+            iconData,
+            color: Colors.white,
+          ),
+          hintStyle: TextStyle(color: Colors.white, fontSize: 15.sp),
           focusedErrorBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
+            borderSide: const BorderSide(color: Colors.white),
             borderRadius: BorderRadius.circular(10.r),
           ),
-
-          errorBorder:  const OutlineInputBorder(
+          errorBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(40)),
-
               borderSide: BorderSide(color: ColorManage.redError)),
-
           enabledBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(40)),
+              borderRadius: BorderRadius.all(Radius.circular(40)),
               borderSide: BorderSide(color: ColorManage.gray)),
-
           focusedBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(40)),
             borderSide: BorderSide(color: ColorManage.redError),
           ),
           hintText: hint,
+          contentPadding: EdgeInsets.only(bottom: 10 ,left: 20,right: 20,),
+          suffixIconConstraints: BoxConstraints(maxHeight:20),
 
           suffix: (passwordTwo)
-              ? GestureDetector(
-            child: (password)
-                ? const Icon(Icons.visibility_outlined)
-                : const Icon(Icons.visibility_off),
-
-            onTap: () {
-              function!();
-            },
-          )
-              : SizedBox()),
+              ? InkWell(
+                  child: (password)
+                      ? const Icon(
+                          Icons.visibility_outlined,
+                          color: Colors.white,
+                        )
+                      : const Icon(
+                      Icons.visibility_off,
+                      color: Colors.white
+                  ),
+                  onTap: () {
+                    function!();
+                  },
+                )
+              : const SizedBox()
+      ),
       obscureText: password,
     );
   }

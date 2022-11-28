@@ -183,7 +183,7 @@ class _EditUserInfoState extends State<EditUserInfo> {
                                     }
                                   },
                                   hint: 'age',
-                                  iconData: FontAwesomeIcons.venusMars,
+                                  iconData: FontAwesomeIcons.calendarDay,
                                   enable: enable,
                                 ),
                                 SizedBox(

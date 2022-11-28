@@ -23,3 +23,4 @@ class CreateCinemasError extends SignupState{
 class CreateCinemasSuccessful extends SignupState{
 
 }
+class PhoneISNotUnique extends SignupState{}

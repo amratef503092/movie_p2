@@ -48,7 +48,7 @@ class _CreateCinemaOwnerState extends State<CreateCinemaOwner> {
           key: formKey,
           child: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -163,7 +163,7 @@ class _CreateCinemaOwnerState extends State<CreateCinemaOwner> {
                       )
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   CustomTextField(
@@ -213,13 +213,15 @@ class _CreateCinemaOwnerState extends State<CreateCinemaOwner> {
                               backgroundColor: Colors.green,
                             ),
                           );
-                          auth.AuthCubit.get(context).getAdmin();
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=> const LayOutScreenAdmin()));
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context)=>
+                          const LayOutScreenAdmin()));
                         }
                         // TODO: implement listener
                       },
                       builder: (context, state) {
-                        return (state is RegisterLoadingState)?const Center(child: CircularProgressIndicator(),):CustomButton(
+                        return (state is RegisterLoadingState)?
+                        const Center(child: CircularProgressIndicator(),):CustomButton(
                           function: () {
                             if (formKey.currentState!.validate()) {
                               SignupCubit.get(context).registerUser(

@@ -230,8 +230,8 @@ class _CinemaOwnerAdminState extends State<CinemaOwnerAdmin> {
                                                           path:
                                                               "+${authCubit.adminData[index].phone}"));
                                                     },
-                                                    icon: FaIcon(
-                                                      FontAwesomeIcons.phone,
+                                                    icon: const FaIcon(
+                                                      FontAwesomeIcons.whatsapp,
                                                       color: Colors.white,
                                                     )),
                                                 IconButton(

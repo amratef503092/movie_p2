@@ -22,7 +22,6 @@ class _ModifyScreenState extends State<ModifyScreen> {
     // TODO: implement initState
     print(widget.ticket!.movieID);
     MainPageCubit.get(context).getHellInfo(hallName: widget.ticket!.hallName);
-
     MainPageCubit.get(context).getMovieInfo(movieID: widget.ticket!.movieID);
     count = widget.ticket!.quantity;
     super.initState();
@@ -41,9 +40,9 @@ class _ModifyScreenState extends State<ModifyScreen> {
           MainPageCubit.get(context).getMyTicket();
           Navigator.pop(context);
         }
-        if (state is EditTicketSuccess)
-        {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Ticket Edited Successfully")));
+        if (state is EditTicketSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Ticket Edited Successfully")));
           MainPageCubit.get(context).getMyTicket();
           Navigator.maybePop(context);
           // Navigator.push(context,MaterialPageRoute(builder: (context) {
@@ -274,10 +273,13 @@ class _ModifyScreenState extends State<ModifyScreen> {
                                                     "Please Select Date")));
                                       } else {
                                         MainPageCubit.get(context).editTicket(
-                                          date :date!,
-                                          quantity:count,
+                                          date: date!,
+                                          quantity: count,
                                           ticketID: widget.ticket!.ticketId,
-                                          totalPrice:count*MainPageCubit.get(context).movieInfo!.price,
+                                          totalPrice: count *
+                                              MainPageCubit.get(context)
+                                                  .movieInfo!
+                                                  .price,
                                         );
                                       }
                                     },

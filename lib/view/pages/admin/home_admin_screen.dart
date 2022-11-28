@@ -19,7 +19,6 @@ class _HomeAdminScreenState extends State<HomeAdminScreen> {
   void initState() {
     // TODO: implement initState
     AuthCubit.get(context).getAdmin();
-
     super.initState();
   }
 
@@ -48,7 +47,9 @@ class _HomeAdminScreenState extends State<HomeAdminScreen> {
                             onPressed: () {
                               authCubit.getAdmin();
                             },
-                            icon: const Icon(Icons.refresh , color: Colors.white,),
+                            icon: const Icon(
+                              Icons.refresh ,
+                              color: Colors.white,),
                           )),
                       Expanded(
                         child: ListView.builder(
@@ -75,7 +76,7 @@ class _HomeAdminScreenState extends State<HomeAdminScreen> {
                                             Text(
                                               "Name : ${authCubit.adminData[index].name}",
                                               style: TextStyle(
-                                                  fontSize: 20.sp,
+                                                  fontSize: 15.sp,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.white),
                                             ),
@@ -193,7 +194,7 @@ class _HomeAdminScreenState extends State<HomeAdminScreen> {
                                                     "+${authCubit.adminData[index].phone}"));
                                           },
                                           icon: FaIcon(
-                                            FontAwesomeIcons.phone,
+                                            FontAwesomeIcons.whatsapp,
                                             color: Colors.white,
                                           ))
                                     ],

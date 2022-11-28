@@ -85,6 +85,8 @@ class MyDrawer extends StatelessWidget {
                           await FirebaseAuth.instance.signOut();
                         }).then((value) async {
                           await CacheHelper.removeData(key: 'id');
+                          await CacheHelper.removeData(key: 'role');
+
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(

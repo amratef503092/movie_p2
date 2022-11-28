@@ -39,11 +39,14 @@ class LoginCubit extends Cubit<LoginState> {
           .then((value) async {
         // here i will store user data in userModel
         userModel = UserModel.fromMap(value.data()!);
+        // save user id in cashHelper
         await CacheHelper.put(
             key: 'id', value: value.data()!['id']); // i cache user id to use
+       // save role in cashHelper
         await CacheHelper.put(
             key: 'role', value: userModel!.role); //  cashing role user
         emit(UserLoginSuccess(
+          userID: value['id'],
           cinemaID: value['cinemaID'],
           role: value['role'],
           message: 'login success',
@@ -53,7 +56,7 @@ class LoginCubit extends Cubit<LoginState> {
     }).catchError((onError) {
       // if email Error or password Error show message :D
       if (onError is FirebaseAuthException) {
-        emit(UserLoginFailed());
+        emit(UserLoginFailed(message: onError.message!.trim()));
       }
     });
   }
